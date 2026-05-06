@@ -40,5 +40,3 @@
     <td><a href="https://developer.mozilla.org/en-US/docs/Web/vuejs" target="_blank" rel="noreferrer"><img src="https://skillicons.dev/icons?i=vue" alt="vuejs" width="40" height="40"/></a></td>
   </tr>
 </table>
-
-<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=RichardWen924&" alt="RichardWen924" /></p>
