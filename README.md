@@ -37,8 +37,8 @@
 ## 📊 GitHub 统计
 
 <p align="left">
-  <img height="160em" src="https://github-readme-stats.vercel.app/api?username=RichardWen924&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=3B82F6&icon_color=3B82F6&text_color=C9D1D9" />
-  <img height="160em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=RichardWen924&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=3B82F6&text_color=C9D1D9&langs_count=6" />
+  <img height="160em" src="https://github-readme-stats.vercel.app/api?username=RichardWen924&show_icons=true&theme=tokyonight&hide_border=true" />
+  <img height="160em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=RichardWen924&layout=compact&theme=tokyonight&hide_border=true&langs_count=6" />
 </p>
 
 <br />
