@@ -181,9 +181,16 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
             </button>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-8">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-3">
               {project.title[lang]}
             </h1>
+
+            {/* Role subtitle */}
+            {project.role?.[lang] && (
+              <p className="text-base text-violet-400/70 font-medium mb-8">
+                {project.role[lang]}
+              </p>
+            )}
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-10">
@@ -195,22 +202,6 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
                   {tag}
                 </span>
               ))}
-            </div>
-
-            {/* Metadata */}
-            <div className="grid grid-cols-2 gap-8 mb-12 pb-12 border-b border-white/[0.06]">
-              <div>
-                <span className="block text-xs text-zinc-600 font-mono uppercase tracking-wider mb-1">
-                  {t.projects.roleLabel}
-                </span>
-                <span className="text-sm text-zinc-300">{project.role?.[lang]}</span>
-              </div>
-              <div>
-                <span className="block text-xs text-zinc-600 font-mono uppercase tracking-wider mb-1">
-                  {t.projects.clientLabel}
-                </span>
-                <span className="text-sm text-zinc-300">{project.client?.[lang]}</span>
-              </div>
             </div>
 
             {/* Long description */}
