@@ -36,15 +36,37 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
       <div className="relative">
         {/* Two-column hero area */}
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[100vh]">
-          {/* Left: Hero image area */}
-          <div className="relative h-[50vh] lg:h-auto lg:sticky lg:top-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-600/30 via-indigo-600/20 to-zinc-950" />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-zinc-950" />
-            {/* Abstract geometric decoration */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <div className="w-64 h-64 rounded-full border border-white/10" />
-              <div className="absolute w-48 h-48 rounded-full border border-white/10 rotate-45" />
-              <div className="absolute w-32 h-32 rounded-full bg-violet-500/20 blur-3xl" />
+          {/* Left: Images */}
+          <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col gap-4 p-4 lg:p-6">
+            {/* Top image - largest */}
+            <div className="flex-1 min-h-0 rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
+              <div className="w-full h-full bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-zinc-900 flex items-center justify-center">
+                <div className="relative w-full h-full flex items-center justify-center opacity-15">
+                  <div className="w-48 h-48 rounded-full border border-white/20" />
+                  <div className="absolute w-36 h-36 rounded-full border border-white/10 rotate-45" />
+                  <div className="absolute w-24 h-24 rounded-full bg-violet-500/30 blur-3xl" />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom two images - equal size, side by side */}
+            <div className="grid grid-cols-2 gap-4 h-[30%] flex-shrink-0">
+              <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
+                <div className="w-full h-full bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-zinc-900 flex items-center justify-center">
+                  <div className="opacity-15">
+                    <div className="w-20 h-20 rounded-full border border-white/20" />
+                    <div className="absolute w-14 h-14 rounded-full bg-emerald-500/20 blur-2xl" />
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
+                <div className="w-full h-full bg-gradient-to-br from-amber-600/20 via-orange-600/10 to-zinc-900 flex items-center justify-center">
+                  <div className="opacity-15">
+                    <div className="w-20 h-20 rounded-full border border-white/20" />
+                    <div className="absolute w-14 h-14 rounded-full bg-amber-500/20 blur-2xl" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -101,26 +123,6 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
                   {para}
                 </p>
               ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Additional image placeholders */}
-        <div className="max-w-6xl mx-auto px-6 sm:px-12 lg:px-16 py-16 lg:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 via-teal-600/5 to-zinc-900" />
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <div className="w-40 h-40 rounded-full border border-white/20" />
-                <div className="absolute w-28 h-28 rounded-full bg-emerald-500/20 blur-2xl" />
-              </div>
-            </div>
-            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-600/10 via-orange-600/5 to-zinc-900" />
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <div className="w-40 h-40 rounded-full border border-white/20" />
-                <div className="absolute w-28 h-28 rounded-full bg-amber-500/20 blur-2xl" />
-              </div>
             </div>
           </div>
         </div>
