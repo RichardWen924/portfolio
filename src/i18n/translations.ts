@@ -70,7 +70,8 @@ export const translations = {
     footer: {
       sectionId: '06 / Contact',
       label: 'GET IN TOUCH',
-      heading: "Let's Connect",
+      heading: 'Work Together',
+      circularText: '\u2022 GET IN TOUCH \u2022 CONTACT ME \u2022 SAY HELLO \u2022 ',
       subDescription:
         'Feel free to reach out for collaborations, discussions, or just a friendly chat.',
       ariaGithub: 'GitHub',
@@ -150,7 +151,8 @@ export const translations = {
     footer: {
       sectionId: '06 / \u8054\u7CFB',
       label: '\u8054\u7CFB\u6211',
-      heading: '\u6B22\u8FCE\u8054\u7CFB',
+      heading: '\u4E00\u8D77\u5408\u4F5C',
+      circularText: '\u2022 \u8054\u7CFB\u6211 \u2022 \u4E00\u8D77\u5408\u4F5C \u2022 \u6253\u4E2A\u62DB\u547C \u2022 ',
       subDescription:
         '\u6B22\u8FCE\u968F\u65F6\u8054\u7CFB\uFF0C\u65E0\u8BBA\u662F\u5408\u4F5C\u3001\u6280\u672F\u8BA8\u8BBA\u8FD8\u662F\u7B80\u5355\u7684\u95F2\u804A\u3002',
       ariaGithub: 'GitHub',
