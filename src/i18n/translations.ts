@@ -48,6 +48,9 @@ export const translations = {
       subDescription:
         'A selection of projects showcasing backend architecture, distributed systems, and LLM integration.',
       viewProject: 'View project',
+      backToProjects: 'Return to projects',
+      roleLabel: 'Role',
+      clientLabel: 'Client',
     },
     skills: {
       sectionId: '03 / Skills',
@@ -124,6 +127,9 @@ export const translations = {
       subDescription:
         '\u5C55\u793A\u540E\u7AEF\u67B6\u6784\u3001\u5206\u5E03\u5F0F\u7CFB\u7EDF\u548C LLM \u96C6\u6210\u7684\u7CBE\u9009\u9879\u76EE\u3002',
       viewProject: '\u67E5\u770B\u9879\u76EE',
+      backToProjects: '\u8FD4\u56DE\u9879\u76EE\u5217\u8868',
+      roleLabel: '\u89D2\u8272',
+      clientLabel: '\u5BA2\u6237',
     },
     skills: {
       sectionId: '03 / \u6280\u80FD',

@@ -247,7 +247,7 @@ function EditModal({
       return { id, school: { en: '', zh: '' }, degree: { en: '', zh: '' }, date: { en: '', zh: '' } } as Education
     }
     if (type === 'projects') {
-      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], href: '' } as Project
+      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, longDescription: { en: '', zh: '' }, role: { en: '', zh: '' }, client: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], href: '' } as Project
     }
     return { id, title: { en: '', zh: '' }, description: { en: '', zh: '' }, tags: [] as string[] } as Service
   })
@@ -284,7 +284,7 @@ function EditModal({
   }
 
   const isBilingual = (field: string) => {
-    return ['role', 'company', 'date', 'description', 'school', 'degree', 'category', 'title', 'attribution'].includes(field)
+    return ['role', 'company', 'date', 'description', 'longDescription', 'school', 'degree', 'category', 'title', 'client', 'attribution'].includes(field)
   }
 
   const fields = getFields(type)
@@ -326,25 +326,44 @@ function EditModal({
               )
             }
             if (isBilingual(field)) {
+              const isTextarea = field === 'longDescription' || field === 'description'
               return (
                 <div key={field}>
                   <label className="block text-xs text-zinc-500 mb-1 font-mono">{field}</label>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <span className="text-[10px] text-zinc-600">EN</span>
-                      <input
-                        value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
-                        onChange={e => updateBilingual(field, 'en', e.target.value)}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
-                      />
+                      {isTextarea ? (
+                        <textarea
+                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
+                          onChange={e => updateBilingual(field, 'en', e.target.value)}
+                          rows={4}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                        />
+                      ) : (
+                        <input
+                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
+                          onChange={e => updateBilingual(field, 'en', e.target.value)}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                        />
+                      )}
                     </div>
                     <div>
                       <span className="text-[10px] text-zinc-600">ZH</span>
-                      <input
-                        value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
-                        onChange={e => updateBilingual(field, 'zh', e.target.value)}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
-                      />
+                      {isTextarea ? (
+                        <textarea
+                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
+                          onChange={e => updateBilingual(field, 'zh', e.target.value)}
+                          rows={4}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                        />
+                      ) : (
+                        <input
+                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
+                          onChange={e => updateBilingual(field, 'zh', e.target.value)}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -393,7 +412,7 @@ function getFields(type: Tab): string[] {
     case 'educations':
       return ['school', 'degree', 'date']
     case 'projects':
-      return ['category', 'title', 'description', 'attribution', 'tags', 'href']
+      return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'tags', 'href']
     case 'services':
       return ['title', 'description', 'tags']
   }

@@ -18,6 +18,9 @@ export interface Project {
   category: { en: string; zh: string };
   title: { en: string; zh: string };
   description: { en: string; zh: string };
+  longDescription: { en: string; zh: string };
+  role: { en: string; zh: string };
+  client: { en: string; zh: string };
   attribution: { en: string; zh: string };
   tags: string[];
   href: string;

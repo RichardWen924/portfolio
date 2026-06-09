@@ -1,11 +1,14 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useT, LanguageContext } from '../../i18n'
 import { projects } from '../../data/projects'
+import type { Project } from '../../data/types'
 import FadeContent from '../effects/FadeContent'
+import ProjectDetail from '../effects/ProjectDetail'
 
 export default function ProjectsSection() {
   const t = useT()
   const { lang } = useContext(LanguageContext)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (
     <section id="projects" className="relative py-24 md:py-32 px-6 sm:px-16">
@@ -36,11 +39,9 @@ export default function ProjectsSection() {
         <div>
           {projects.map((project, i) => (
             <FadeContent key={project.id} blur={true} duration={800} delay={200 + i * 150}>
-              <a
-                href={project.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block py-6 border-t border-white/[0.06] hover:border-white/[0.12] transition-colors"
+              <button
+                onClick={() => setSelectedProject(project)}
+                className="group block w-full text-left py-6 border-t border-white/[0.06] hover:border-white/[0.12] transition-colors cursor-pointer"
               >
                 <div className="flex items-start gap-8">
                   {/* Number */}
@@ -90,7 +91,7 @@ export default function ProjectsSection() {
                     </div>
                   </div>
                 </div>
-              </a>
+              </button>
             </FadeContent>
           ))}
         </div>
@@ -98,6 +99,14 @@ export default function ProjectsSection() {
         {/* Bottom divider */}
         <div className="border-t border-white/[0.06]" />
       </div>
+
+      {/* Project detail overlay */}
+      {selectedProject && (
+        <ProjectDetail
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </section>
   )
 }
