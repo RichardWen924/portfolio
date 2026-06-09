@@ -35,3 +35,14 @@ export interface Service {
   description: { en: string; zh: string };
   tags: string[];
 }
+
+export interface AboutContent {
+  label: { en: string; zh: string };
+  heading: { en: string; zh: string };
+  bio1: { en: string; zh: string };
+  bio2: { en: string; zh: string };
+  bio3: { en: string; zh: string };
+  statYears: number;
+  statProjects: number;
+  statTech: number;
+}

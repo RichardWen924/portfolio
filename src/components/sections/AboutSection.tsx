@@ -1,14 +1,18 @@
-import { useT } from '../../i18n'
+import { useContext } from 'react'
+import { LanguageContext, useT } from '../../i18n'
+import { useAbout } from '../../data/loader'
 import CountUp from '../effects/CountUp'
 import FadeContent from '../effects/FadeContent'
 
 export default function AboutSection() {
   const t = useT()
+  const { lang } = useContext(LanguageContext)
+  const about = useAbout()
 
   const stats = [
-    { value: 4, label: t.about.statYears, suffix: '+' },
-    { value: 15, label: t.about.statProjects, suffix: '+' },
-    { value: 10, label: t.about.statTech, suffix: '+' },
+    { value: about.statYears, label: t.about.statYears, suffix: '+' },
+    { value: about.statProjects, label: t.about.statProjects, suffix: '+' },
+    { value: about.statTech, label: t.about.statTech, suffix: '+' },
   ]
 
   return (
@@ -25,9 +29,9 @@ export default function AboutSection() {
               </svg>
               <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">{t.about.sectionId}</span>
             </div>
-            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">{t.about.label}</p>
+            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">{about.label[lang]}</p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              {t.about.heading}
+              {about.heading[lang]}
             </h2>
           </div>
         </FadeContent>
@@ -37,13 +41,13 @@ export default function AboutSection() {
           <FadeContent blur={true} duration={1000} delay={200}>
             <div className="space-y-4">
               <p className="text-zinc-400 text-lg leading-relaxed">
-                {t.about.bio1}
+                {about.bio1[lang]}
               </p>
               <p className="text-zinc-400 text-lg leading-relaxed">
-                {t.about.bio2}
+                {about.bio2[lang]}
               </p>
               <p className="text-zinc-500 text-base leading-relaxed">
-                {t.about.bio3}
+                {about.bio3[lang]}
               </p>
             </div>
           </FadeContent>
@@ -61,7 +65,7 @@ export default function AboutSection() {
                       from={0}
                       to={stat.value}
                       delay={0.5}
-                      duration={3}
+                      duration={1.5}
                       className="text-violet-400"
                     />
                     <span className="text-violet-400">{stat.suffix}</span>

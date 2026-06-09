@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
-import type { Experience, Education, Project, Service } from '../data/types'
+import type { Experience, Education, Project, Service, AboutContent } from '../data/types'
 import { experiences as defaultExperiences, educations as defaultEducations } from '../data/experience'
 import { projects as defaultProjects } from '../data/projects'
 import { services as defaultServices } from '../data/services'
+import { defaultAbout } from '../data/about'
 import { triggerSync } from '../data/loader'
 
-type Tab = 'experiences' | 'educations' | 'projects' | 'services'
+type Tab = 'experiences' | 'educations' | 'projects' | 'services' | 'about'
 
 const STORAGE_KEY = 'admin-content-v2'
 
@@ -14,6 +15,7 @@ interface StoredData {
   educations: Education[]
   projects: Project[]
   services: Service[]
+  about: AboutContent
 }
 
 function isValidExperienceItem(item: unknown): item is Experience {
@@ -51,6 +53,7 @@ function migrateData(raw: StoredData): StoredData {
     raw.projects = defaultProjects
   }
   if (!Array.isArray(raw.services)) raw.services = defaultServices
+  if (!raw.about || typeof raw.about !== 'object' || typeof raw.about.heading !== 'object') raw.about = defaultAbout
   return raw
 }
 
@@ -64,6 +67,7 @@ function loadData(): StoredData {
     educations: defaultEducations,
     projects: defaultProjects,
     services: defaultServices,
+    about: defaultAbout,
   }
 }
 
@@ -81,6 +85,7 @@ const DATA_FILES: { key: keyof StoredData; path: string }[] = [
   { key: 'educations', path: 'public/data/educations.json' },
   { key: 'projects', path: 'public/data/projects.json' },
   { key: 'services', path: 'public/data/services.json' },
+  { key: 'about', path: 'public/data/about.json' },
 ]
 
 export default function Admin() {
@@ -96,6 +101,7 @@ export default function Admin() {
   useEffect(() => saveData(data), [data])
 
   const handleDelete = useCallback((type: Tab, id: string) => {
+    if (type === 'about') return
     setData(prev => {
       const next = { ...prev }
       if (type === 'experiences') next.experiences = prev.experiences.filter(e => e.id !== id)
@@ -113,6 +119,7 @@ export default function Admin() {
       educations: defaultEducations,
       projects: defaultProjects,
       services: defaultServices,
+      about: defaultAbout,
     }
     setData(defaults)
     saveData(defaults)
@@ -209,6 +216,7 @@ export default function Admin() {
     { key: 'educations', label: 'Educations', count: data.educations.length },
     { key: 'projects', label: 'Projects', count: data.projects.length },
     { key: 'services', label: 'Services', count: data.services.length },
+    { key: 'about', label: 'About', count: 1 },
   ]
 
   return (
@@ -272,12 +280,14 @@ export default function Admin() {
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => { setEditing(null); setAdding(true) }}
-              className="px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 text-sm font-medium rounded-lg border border-violet-500/20 transition-colors"
-            >
-              + Add New
-            </button>
+            {tab !== 'about' && (
+              <button
+                onClick={() => { setEditing(null); setAdding(true) }}
+                className="px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 text-sm font-medium rounded-lg border border-violet-500/20 transition-colors"
+              >
+                + Add New
+              </button>
+            )}
             <button
               onClick={handleSync}
               className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-sm font-medium rounded-lg border border-emerald-500/20 transition-colors"
@@ -295,34 +305,46 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* List */}
-        <div className="space-y-2">
-          {data[tab].map((item, i) => (
-            <div key={item.id} className="flex items-start gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-lg hover:border-white/[0.1] transition-colors group">
-              <span className="font-mono text-xs text-zinc-600 pt-1">{String(i + 1).padStart(2, '0')}</span>
-              <div className="flex-1 min-w-0">
-                {renderSummary(item, tab)}
+        {/* About tab: inline editor */}
+        {tab === 'about' && (
+          <AboutEditor
+            data={data.about}
+            onSave={(about) => {
+              setData(prev => ({ ...prev, about }))
+            }}
+          />
+        )}
+
+        {/* List (non-about tabs) */}
+        {tab !== 'about' && (
+          <div className="space-y-2">
+            {(data[tab] as (Experience | Education | Project | Service)[]).map((item, i) => (
+              <div key={item.id} className="flex items-start gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-lg hover:border-white/[0.1] transition-colors group">
+                <span className="font-mono text-xs text-zinc-600 pt-1">{String(i + 1).padStart(2, '0')}</span>
+                <div className="flex-1 min-w-0">
+                  {renderSummary(item, tab)}
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => { setEditing(item); setAdding(false) }}
+                    className="px-2 py-1 text-xs text-zinc-400 hover:text-white hover:bg-white/[0.05] rounded transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => { if (confirm('Delete this item?')) handleDelete(tab, item.id) }}
+                    className="px-2 py-1 text-xs text-red-400/70 hover:text-red-400 hover:bg-red-400/5 rounded transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={() => { setEditing(item); setAdding(false) }}
-                  className="px-2 py-1 text-xs text-zinc-400 hover:text-white hover:bg-white/[0.05] rounded transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => { if (confirm('Delete this item?')) handleDelete(tab, item.id) }}
-                  className="px-2 py-1 text-xs text-red-400/70 hover:text-red-400 hover:bg-red-400/5 rounded transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-          {data[tab].length === 0 && (
-            <p className="text-zinc-600 text-sm py-8 text-center">No items yet. Click "Add New" to create one.</p>
-          )}
-        </div>
+            ))}
+            {(data[tab] as unknown[]).length === 0 && (
+              <p className="text-zinc-600 text-sm py-8 text-center">No items yet. Click "Add New" to create one.</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Modal */}
@@ -333,7 +355,7 @@ export default function Admin() {
           onSave={(item) => {
             setData(prev => {
               const next = { ...prev }
-              const list = [...next[tab]] as typeof item[]
+              const list = [...(next[tab] as unknown as typeof item[])]
               const idx = list.findIndex(x => x.id === item.id)
               if (idx >= 0) list[idx] = item
               else list.push(item)
@@ -731,6 +753,136 @@ function getBilingual(obj: Record<string, unknown>, field: string, lang: 'en' | 
   return ''
 }
 
+function AboutEditor({ data, onSave }: { data: AboutContent; onSave: (a: AboutContent) => void }) {
+  const [form, setForm] = useState(structuredClone(data))
+  const [editLang, setEditLang] = useState<'all' | 'en' | 'zh'>('all')
+
+  const update = (field: string, lang: 'en' | 'zh', value: string) => {
+    setForm(prev => {
+      const next = structuredClone(prev)
+      const target = next as unknown as Record<string, Record<string, string>>
+      target[field][lang] = value
+      return next
+    })
+  }
+
+  const updateNumber = (field: string, value: number) => {
+    setForm(prev => {
+      const next = structuredClone(prev)
+      ;(next as unknown as Record<string, number>)[field] = value
+      return next
+    })
+  }
+
+  const bilingualFields: { key: string; label: string; textarea?: boolean }[] = [
+    { key: 'label', label: 'Label' },
+    { key: 'heading', label: 'Heading' },
+    { key: 'bio1', label: 'Bio 1', textarea: true },
+    { key: 'bio2', label: 'Bio 2', textarea: true },
+    { key: 'bio3', label: 'Bio 3', textarea: true },
+  ]
+
+  return (
+    <div className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-bold">About Section</h2>
+        <div className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
+          {(['all', 'en', 'zh'] as const).map(l => (
+            <button
+              key={l}
+              onClick={() => setEditLang(l)}
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+                editLang === l ? 'bg-violet-500/30 text-violet-300' : 'text-zinc-500 hover:text-zinc-300'
+              }`}
+            >
+              {l === 'all' ? 'EN \u00b7 ZH' : l === 'en' ? 'EN' : 'ZH'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-5">
+        {bilingualFields.map(f => {
+          const showEN = editLang === 'all' || editLang === 'en'
+          const showZH = editLang === 'all' || editLang === 'zh'
+          return (
+            <div key={f.key}>
+              <label className="block text-xs text-zinc-500 mb-1 font-mono">{f.label}</label>
+              <div className={`grid ${editLang === 'all' ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
+                {showEN && (
+                  <div>
+                    <span className="text-[10px] text-zinc-600">EN</span>
+                    {f.textarea ? (
+                      <textarea
+                        value={(form as unknown as Record<string, Record<string, string>>)[f.key].en}
+                        onChange={e => update(f.key, 'en', e.target.value)}
+                        rows={3}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                      />
+                    ) : (
+                      <input
+                        value={(form as unknown as Record<string, Record<string, string>>)[f.key].en}
+                        onChange={e => update(f.key, 'en', e.target.value)}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                      />
+                    )}
+                  </div>
+                )}
+                {showZH && (
+                  <div>
+                    <span className="text-[10px] text-zinc-600">ZH</span>
+                    {f.textarea ? (
+                      <textarea
+                        value={(form as unknown as Record<string, Record<string, string>>)[f.key].zh}
+                        onChange={e => update(f.key, 'zh', e.target.value)}
+                        rows={3}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                      />
+                    ) : (
+                      <input
+                        value={(form as unknown as Record<string, Record<string, string>>)[f.key].zh}
+                        onChange={e => update(f.key, 'zh', e.target.value)}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Stats */}
+        <div className="border-t border-white/[0.06] pt-5">
+          <label className="block text-xs text-zinc-500 mb-3 font-mono">Stats</label>
+          <div className="grid grid-cols-3 gap-4">
+            {(['statYears', 'statProjects', 'statTech'] as const).map(key => (
+              <div key={key}>
+                <label className="block text-[10px] text-zinc-600 mb-1">{key}</label>
+                <input
+                  type="number"
+                  value={(form as unknown as Record<string, number>)[key]}
+                  onChange={e => updateNumber(key, parseInt(e.target.value, 10) || 0)}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors font-mono"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end gap-3 mt-8">
+        <button
+          onClick={() => onSave(form)}
+          className="px-4 py-2 bg-violet-500 hover:bg-violet-400 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function getFields(type: Tab): string[] {
   switch (type) {
     case 'experiences':
@@ -741,5 +893,7 @@ function getFields(type: Tab): string[] {
       return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'highlights', 'tags', 'images', 'href']
     case 'services':
       return ['title', 'description', 'tags']
+    case 'about':
+      return []
   }
 }
