@@ -12,8 +12,8 @@ export default function ExperienceTimeline({ experiences }: ExperienceTimelinePr
 
   return (
     <div className="relative border-l border-white/[0.08] ml-6 sm:ml-16 space-y-14 py-2">
-      {experiences.map((exp, i) => (
-        <FadeContent key={exp.id} blur={true} duration={800} delay={500 + i * 150}>
+      {experiences.map((exp) => (
+        <FadeContent key={exp.id} blur={true} duration={600} threshold={0.3}>
           <div className="relative pl-8 sm:pl-12 group">
             {/* 左侧圆点 */}
             <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-800 bg-violet-400/60 group-hover:bg-violet-400 group-hover:shadow-[0_0_12px_rgba(167,139,250,0.4)] transition-all duration-300" />

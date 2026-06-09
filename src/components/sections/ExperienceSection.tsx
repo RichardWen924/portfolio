@@ -38,9 +38,11 @@ export default function ExperienceSection() {
           <p className="font-mono text-xs uppercase tracking-widest text-violet-400/60 mb-6">
             {t.experience.educationLabel}
           </p>
-          <div className="relative border-l border-white/[0.08] ml-6 sm:ml-16 py-2 mb-16">
-            {educations.map(edu => (
-              <div key={edu.id} className="relative pl-8 sm:pl-12">
+        </FadeContent>
+        <div className="relative border-l border-white/[0.08] ml-6 sm:ml-16 py-2 mb-16 space-y-10">
+          {educations.map(edu => (
+            <FadeContent key={edu.id} blur={true} duration={600} threshold={0.3}>
+              <div className="relative pl-8 sm:pl-12">
                 <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-800 bg-emerald-400/60 transition-all duration-300" />
                 <span className="absolute -left-28 sm:-left-36 top-0 text-xs font-mono text-zinc-600 tracking-wide whitespace-nowrap hidden sm:block">
                   {edu.date[lang]}
@@ -53,9 +55,9 @@ export default function ExperienceSection() {
                   <span className="block sm:hidden font-mono text-xs text-zinc-600">&middot; {edu.date[lang]}</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </FadeContent>
+            </FadeContent>
+          ))}
+        </div>
 
         {/* Career */}
         <FadeContent blur={true} duration={800} delay={400}>
