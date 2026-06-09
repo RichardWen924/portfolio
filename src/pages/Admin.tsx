@@ -3,10 +3,11 @@ import type { Experience, Education, Project, Service } from '../data/types'
 import { experiences as defaultExperiences, educations as defaultEducations } from '../data/experience'
 import { projects as defaultProjects } from '../data/projects'
 import { services as defaultServices } from '../data/services'
+import { triggerSync } from '../data/loader'
 
 type Tab = 'experiences' | 'educations' | 'projects' | 'services'
 
-const STORAGE_KEY = 'admin-content'
+const STORAGE_KEY = 'admin-content-v2'
 
 interface StoredData {
   experiences: Experience[]
@@ -36,12 +37,23 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
 }
 
+const REPO = 'RichardWen924/portfolio'
+const DATA_FILES: { key: keyof StoredData; path: string }[] = [
+  { key: 'experiences', path: 'public/data/experiences.json' },
+  { key: 'educations', path: 'public/data/educations.json' },
+  { key: 'projects', path: 'public/data/projects.json' },
+  { key: 'services', path: 'public/data/services.json' },
+]
+
 export default function Admin() {
   const [data, setData] = useState<StoredData>(loadData)
   const [tab, setTab] = useState<Tab>('experiences')
   const [editing, setEditing] = useState<Experience | Education | Project | Service | null>(null)
   const [adding, setAdding] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [token, setToken] = useState(() => sessionStorage.getItem('gh-token') || '')
+  const [publishing, setPublishing] = useState(false)
+  const [publishMsg, setPublishMsg] = useState('')
 
   useEffect(() => saveData(data), [data])
 
@@ -87,6 +99,73 @@ export default function Admin() {
     setTimeout(() => setCopied(false), 2000)
   }, [data, tab])
 
+  const handlePublish = useCallback(async () => {
+    if (!token.trim()) {
+      setPublishMsg('Please enter a GitHub token first.')
+      return
+    }
+    if (!confirm('Publish all changes to GitHub? This will update the live website in ~1-2 minutes.')) return
+
+    setPublishing(true)
+    setPublishMsg('Publishing...')
+
+    const headers = {
+      Authorization: `token ${token.trim()}`,
+      'Content-Type': 'application/json',
+    }
+
+    try {
+      for (const file of DATA_FILES) {
+        const content = JSON.stringify(data[file.key], null, 2)
+        const base64 = btoa(unescape(encodeURIComponent(content)))
+
+        // Get current file SHA
+        let sha = ''
+        try {
+          const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${file.path}`, { headers })
+          if (getRes.ok) {
+            const getData = await getRes.json()
+            sha = getData.sha
+          }
+        } catch { /* file may not exist yet */ }
+
+        // PUT new content
+        const body: Record<string, string> = {
+          message: `Update ${file.path} from Admin`,
+          content: base64,
+        }
+        if (sha) body.sha = sha
+
+        const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${file.path}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify(body),
+        })
+
+        if (!putRes.ok) {
+          const errData = await putRes.json().catch(() => ({}))
+          throw new Error(`${file.path}: ${putRes.status} ${(errData as { message?: string }).message || ''}`)
+        }
+      }
+
+      // Save token to sessionStorage
+      sessionStorage.setItem('gh-token', token.trim())
+      setPublishMsg('Published! The website will update in 1-2 minutes.')
+    } catch (err) {
+      setPublishMsg(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    } finally {
+      setPublishing(false)
+    }
+  }, [data, token])
+
+  const [synced, setSynced] = useState(false)
+
+  const handleSync = useCallback(() => {
+    triggerSync()
+    setSynced(true)
+    setTimeout(() => setSynced(false), 2000)
+  }, [])
+
   const tabs: { key: Tab; label: string; count: number }[] = [
     { key: 'experiences', label: 'Experiences', count: data.experiences.length },
     { key: 'educations', label: 'Educations', count: data.educations.length },
@@ -112,6 +191,29 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* Token + Publish bar */}
+        <div className="flex items-center gap-3 mb-6 p-3 bg-white/[0.02] border border-white/[0.05] rounded-lg">
+          <input
+            type="password"
+            value={token}
+            onChange={e => setToken(e.target.value)}
+            placeholder="GitHub Personal Access Token"
+            className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 transition-colors font-mono"
+          />
+          <button
+            onClick={handlePublish}
+            disabled={publishing}
+            className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-sm font-medium rounded-lg border border-emerald-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            {publishing ? 'Publishing...' : 'Publish to GitHub'}
+          </button>
+        </div>
+        {publishMsg && (
+          <p className={`text-xs mb-4 ${publishMsg.startsWith('Error') ? 'text-red-400' : publishMsg.startsWith('Published') ? 'text-emerald-400' : 'text-zinc-400'}`}>
+            {publishMsg}
+          </p>
+        )}
+
         {/* Tabs */}
         <div className="flex gap-1 mb-8 border-b border-white/[0.06]">
           {tabs.map(t => (
@@ -131,12 +233,20 @@ export default function Admin() {
 
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => { setEditing(null); setAdding(true) }}
-            className="px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 text-sm font-medium rounded-lg border border-violet-500/20 transition-colors"
-          >
-            + Add New
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { setEditing(null); setAdding(true) }}
+              className="px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 text-sm font-medium rounded-lg border border-violet-500/20 transition-colors"
+            >
+              + Add New
+            </button>
+            <button
+              onClick={handleSync}
+              className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-sm font-medium rounded-lg border border-emerald-500/20 transition-colors"
+            >
+              {synced ? 'Synced!' : 'Sync to Site'}
+            </button>
+          </div>
           <div className="flex items-center gap-2">
             <button onClick={handleCopy} className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded transition-colors">
               {copied ? 'Copied!' : 'Copy JSON'}
@@ -209,9 +319,19 @@ function renderSummary(item: Experience | Education | Project | Service, _type: 
     return i.title.en
   }
   const getSub = (i: Experience | Education | Project | Service): string => {
-    if ('company' in i) return i.company.en
-    if ('degree' in i) return i.degree.en
-    if ('description' in i) return i.description.en.slice(0, 80) + '...'
+    const item = i as unknown as Record<string, unknown>
+    if ('startDate' in item && item.startDate) {
+      return `${item.startDate} \u2014 ${item.endDate || 'Present'}`
+    }
+    if ('company' in item && item.company) {
+      return (item.company as { en: string }).en
+    }
+    if ('degree' in item && item.degree) {
+      return (item.degree as { en: string }).en
+    }
+    if ('description' in item && item.description) {
+      return (item.description as { en: string }).en.slice(0, 80) + '...'
+    }
     return ''
   }
 
@@ -235,13 +355,14 @@ function EditModal({
   onClose: () => void
 }) {
   const isNew = !item
+  const [editLang, setEditLang] = useState<'all' | 'en' | 'zh'>('all')
 
   const [form, setForm] = useState(() => {
     if (item) return structuredClone(item)
 
     const id = generateId()
     if (type === 'experiences') {
-      return { id, role: { en: '', zh: '' }, company: { en: '', zh: '' }, date: { en: '', zh: '' }, description: { en: '', zh: '' } } as Experience
+      return { id, role: { en: '', zh: '' }, company: { en: '', zh: '' }, startDate: '', endDate: null, description: { en: '', zh: '' } } as Experience
     }
     if (type === 'educations') {
       return { id, school: { en: '', zh: '' }, degree: { en: '', zh: '' }, date: { en: '', zh: '' } } as Education
@@ -293,7 +414,7 @@ function EditModal({
   }
 
   const isBilingual = (field: string) => {
-    return ['role', 'company', 'date', 'description', 'longDescription', 'school', 'degree', 'category', 'title', 'client', 'attribution'].includes(field)
+    return ['role', 'company', 'description', 'longDescription', 'school', 'degree', 'category', 'title', 'client', 'attribution'].includes(field)
   }
 
   const fields = getFields(type)
@@ -305,7 +426,22 @@ function EditModal({
         className="relative bg-zinc-900 border border-white/[0.08] rounded-xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-lg font-bold mb-6">{isNew ? 'Add' : 'Edit'} {type.slice(0, -1)}</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold">{isNew ? 'Add' : 'Edit'} {type.slice(0, -1)}</h2>
+          <div className="flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
+            {(['all', 'en', 'zh'] as const).map(l => (
+              <button
+                key={l}
+                onClick={() => setEditLang(l)}
+                className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+                  editLang === l ? 'bg-violet-500/30 text-violet-300' : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {l === 'all' ? 'EN \u00b7 ZH' : l === 'en' ? 'EN' : 'ZH'}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="space-y-5">
           {fields.map(field => {
@@ -334,74 +470,107 @@ function EditModal({
                 </div>
               )
             }
+            if (field === 'startDate' || field === 'endDate') {
+              const val = (form as Experience)[field as 'startDate' | 'endDate'] ?? ''
+              return (
+                <div key={field}>
+                  <label className="block text-xs text-zinc-500 mb-1 font-mono">
+                    {field} {field === 'endDate' ? '(empty = Present)' : '(YYYY-MM)'}
+                  </label>
+                  <input
+                    value={String(val)}
+                    onChange={e => setForm(prev => {
+                      const next = structuredClone(prev)
+                      const v = e.target.value.trim()
+                      ;(next as unknown as Record<string, unknown>)[field] = field === 'endDate' ? (v || null) : v
+                      return next
+                    })}
+                    placeholder={field === 'startDate' ? '2022-07' : '2025-06'}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors font-mono"
+                  />
+                </div>
+              )
+            }
             if (field === 'highlights') {
               const hl = (form as Project).highlights || { en: [], zh: [] }
+              const showEN = editLang === 'all' || editLang === 'en'
+              const showZH = editLang === 'all' || editLang === 'zh'
               return (
                 <div key={field}>
                   <label className="block text-xs text-zinc-500 mb-1 font-mono">highlights (one per line)</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <span className="text-[10px] text-zinc-600">EN</span>
-                      <textarea
-                        value={hl.en.join('\n')}
-                        onChange={e => updateHighlights('en', e.target.value)}
-                        rows={4}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-zinc-600">ZH</span>
-                      <textarea
-                        value={hl.zh.join('\n')}
-                        onChange={e => updateHighlights('zh', e.target.value)}
-                        rows={4}
-                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
-                      />
-                    </div>
+                  <div className={`grid ${editLang === 'all' ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
+                    {showEN && (
+                      <div>
+                        <span className="text-[10px] text-zinc-600">EN</span>
+                        <textarea
+                          value={hl.en.join('\n')}
+                          onChange={e => updateHighlights('en', e.target.value)}
+                          rows={4}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                        />
+                      </div>
+                    )}
+                    {showZH && (
+                      <div>
+                        <span className="text-[10px] text-zinc-600">ZH</span>
+                        <textarea
+                          value={hl.zh.join('\n')}
+                          onChange={e => updateHighlights('zh', e.target.value)}
+                          rows={4}
+                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               )
             }
             if (isBilingual(field)) {
               const isTextarea = field === 'longDescription' || field === 'description'
+              const showEN = editLang === 'all' || editLang === 'en'
+              const showZH = editLang === 'all' || editLang === 'zh'
               return (
                 <div key={field}>
                   <label className="block text-xs text-zinc-500 mb-1 font-mono">{field}</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <span className="text-[10px] text-zinc-600">EN</span>
-                      {isTextarea ? (
-                        <textarea
-                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
-                          onChange={e => updateBilingual(field, 'en', e.target.value)}
-                          rows={4}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
-                        />
-                      ) : (
-                        <input
-                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
-                          onChange={e => updateBilingual(field, 'en', e.target.value)}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
-                        />
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-zinc-600">ZH</span>
-                      {isTextarea ? (
-                        <textarea
-                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
-                          onChange={e => updateBilingual(field, 'zh', e.target.value)}
-                          rows={4}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
-                        />
-                      ) : (
-                        <input
-                          value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
-                          onChange={e => updateBilingual(field, 'zh', e.target.value)}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
-                        />
-                      )}
-                    </div>
+                  <div className={`grid ${editLang === 'all' ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
+                    {showEN && (
+                      <div>
+                        <span className="text-[10px] text-zinc-600">EN</span>
+                        {isTextarea ? (
+                          <textarea
+                            value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
+                            onChange={e => updateBilingual(field, 'en', e.target.value)}
+                            rows={4}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                          />
+                        ) : (
+                          <input
+                            value={getBilingual(form as unknown as Record<string, unknown>, field, 'en')}
+                            onChange={e => updateBilingual(field, 'en', e.target.value)}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                          />
+                        )}
+                      </div>
+                    )}
+                    {showZH && (
+                      <div>
+                        <span className="text-[10px] text-zinc-600">ZH</span>
+                        {isTextarea ? (
+                          <textarea
+                            value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
+                            onChange={e => updateBilingual(field, 'zh', e.target.value)}
+                            rows={4}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                          />
+                        ) : (
+                          <input
+                            value={getBilingual(form as unknown as Record<string, unknown>, field, 'zh')}
+                            onChange={e => updateBilingual(field, 'zh', e.target.value)}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               )
@@ -445,7 +614,7 @@ function getBilingual(obj: Record<string, unknown>, field: string, lang: 'en' | 
 function getFields(type: Tab): string[] {
   switch (type) {
     case 'experiences':
-      return ['role', 'company', 'date', 'description']
+      return ['role', 'company', 'startDate', 'endDate', 'description']
     case 'educations':
       return ['school', 'degree', 'date']
     case 'projects':

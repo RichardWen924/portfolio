@@ -1,0 +1,8 @@
+[
+  {
+    "id": "edu-1",
+    "school": { "en": "Nanchang University", "zh": "南昌大学" },
+    "degree": { "en": "B.E. Software Engineering", "zh": "软件工程学士" },
+    "date": { "en": "2018 — 2022", "zh": "2018 — 2022" }
+  }
+]

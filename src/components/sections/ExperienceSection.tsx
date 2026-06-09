@@ -1,12 +1,14 @@
 import { useContext } from 'react'
 import { useT, LanguageContext } from '../../i18n'
-import { experiences, educations } from '../../data/experience'
+import { useExperiences, useEducations } from '../../data/loader'
 import ExperienceTimeline from '../effects/ExperienceTimeline'
 import FadeContent from '../effects/FadeContent'
 
 export default function ExperienceSection() {
   const t = useT()
   const { lang } = useContext(LanguageContext)
+  const experiences = useExperiences()
+  const educations = useEducations()
 
   return (
     <section id="experience" className="relative py-24 md:py-32 px-6 sm:px-16">

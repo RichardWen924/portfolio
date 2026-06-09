@@ -2,7 +2,8 @@ export interface Experience {
   id: string;
   role: { en: string; zh: string };
   company: { en: string; zh: string };
-  date: { en: string; zh: string };
+  startDate: string;         // 'YYYY-MM'
+  endDate: string | null;    // null = present
   description: { en: string; zh: string };
 }
 

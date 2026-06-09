@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { LanguageContext } from '../../i18n'
 import type { Experience } from '../../data/types'
 import FadeContent from './FadeContent'
@@ -7,12 +7,32 @@ interface ExperienceTimelineProps {
   experiences: Experience[]
 }
 
+const ZH_MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+const EN_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+function formatDate(dateStr: string, lang: 'en' | 'zh'): string {
+  const [year, month] = dateStr.split('-')
+  const months = lang === 'zh' ? ZH_MONTHS : EN_MONTHS
+  const m = months[parseInt(month, 10) - 1]
+  return lang === 'zh' ? `${year}年${m}` : `${m} ${year}`
+}
+
+function formatRange(start: string, end: string | null, lang: 'en' | 'zh'): string {
+  const startFormatted = formatDate(start, lang)
+  const endFormatted = end ? formatDate(end, lang) : (lang === 'zh' ? '至今' : 'Present')
+  return `${startFormatted} \u2014 ${endFormatted}`
+}
+
 export default function ExperienceTimeline({ experiences }: ExperienceTimelineProps) {
   const { lang } = useContext(LanguageContext)
 
+  const sorted = useMemo(() => {
+    return [...experiences].sort((a, b) => b.startDate.localeCompare(a.startDate))
+  }, [experiences])
+
   return (
     <div className="relative border-l border-white/[0.08] ml-6 sm:ml-16 space-y-14 py-2">
-      {experiences.map((exp) => (
+      {sorted.map((exp) => (
         <FadeContent key={exp.id} blur={true} duration={600} threshold={0.3}>
           <div className="relative pl-8 sm:pl-12 group">
             {/* 左侧圆点 */}
@@ -20,14 +40,14 @@ export default function ExperienceTimeline({ experiences }: ExperienceTimelinePr
 
             {/* 左侧日期 */}
             <span className="absolute -left-28 sm:-left-36 top-0 text-xs font-mono text-zinc-600 tracking-wide whitespace-nowrap hidden sm:block">
-              {exp.date[lang]}
+              {formatRange(exp.startDate, exp.endDate, lang)}
             </span>
 
             {/* 内容 */}
             <div>
               {/* 日期（移动端） */}
               <span className="block sm:hidden text-xs font-mono text-zinc-600 tracking-wide mb-2">
-                {exp.date[lang]}
+                {formatRange(exp.startDate, exp.endDate, lang)}
               </span>
 
               {/* 职位 */}

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { useT, LanguageContext } from '../../i18n'
-import { projects } from '../../data/projects'
+import { useProjects } from '../../data/loader'
 import type { Project } from '../../data/types'
 import FadeContent from '../effects/FadeContent'
 import ProjectDetail from '../effects/ProjectDetail'
@@ -8,6 +8,7 @@ import ProjectDetail from '../effects/ProjectDetail'
 export default function ProjectsSection() {
   const t = useT()
   const { lang } = useContext(LanguageContext)
+  const projects = useProjects()
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (

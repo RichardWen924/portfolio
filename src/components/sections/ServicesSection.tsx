@@ -1,11 +1,12 @@
 import { useContext } from 'react'
 import { useT, LanguageContext } from '../../i18n'
-import { services } from '../../data/services'
+import { useServices } from '../../data/loader'
 import FadeContent from '../effects/FadeContent'
 
 export default function ServicesSection() {
   const t = useT()
   const { lang } = useContext(LanguageContext)
+  const services = useServices()
 
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 sm:px-16">
