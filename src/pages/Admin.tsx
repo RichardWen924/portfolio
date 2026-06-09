@@ -98,15 +98,6 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
 }
 
-function toBase64(str: string): string {
-  const bytes = new TextEncoder().encode(str)
-  let binary = ''
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i])
-  }
-  return btoa(binary)
-}
-
 const REPO = 'RichardWen924/portfolio'
 const DATA_FILES: { key: keyof StoredData; path: string }[] = [
   { key: 'experiences', path: 'public/data/experiences.json' },
@@ -201,7 +192,7 @@ export default function Admin() {
     }
 
     try {
-      // Validate token first with a lightweight API call
+      // Validate token first
       const userRes = await fetch('https://api.github.com/user', { headers })
       if (!userRes.ok) {
         const errData = await userRes.json().catch(() => ({}))
@@ -215,45 +206,93 @@ export default function Admin() {
         throw new Error(`Token validation failed (${userRes.status}): ${msg}`)
       }
 
-      const errors: string[] = []
+      setPublishMsg('Fetching latest commit...')
+
+      // 1. Get the latest commit on main to use as parent
+      const refRes = await fetch(`https://api.github.com/repos/${REPO}/git/ref/heads/main`, { headers })
+      if (!refRes.ok) {
+        const errData = await refRes.json().catch(() => ({}))
+        throw new Error(`Failed to get main ref: ${refRes.status} ${(errData as { message?: string }).message || ''}`)
+      }
+      const refData = await refRes.json() as { object: { sha: string } }
+      const parentSha = refData.object.sha
+
+      // 2. Get the parent commit to find its tree SHA
+      const parentRes = await fetch(`https://api.github.com/repos/${REPO}/git/commits/${parentSha}`, { headers })
+      if (!parentRes.ok) {
+        const errData = await parentRes.json().catch(() => ({}))
+        throw new Error(`Failed to get parent commit: ${parentRes.status} ${(errData as { message?: string }).message || ''}`)
+      }
+      const parentData = await parentRes.json() as { tree: { sha: string } }
+      const baseTreeSha = parentData.tree.sha
+
+      setPublishMsg('Creating blobs...')
+
+      // 3. Create blobs for each file
+      const treeItems: { path: string; mode: string; type: string; sha: string }[] = []
       for (const file of DATA_FILES) {
-        setPublishMsg(`Publishing ${file.path}...`)
         const content = JSON.stringify(data[file.key], null, 2)
-        const base64 = toBase64(content)
-
-        // Get current file SHA
-        let sha = ''
-        try {
-          const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${file.path}`, { headers })
-          if (getRes.ok) {
-            const getData = await getRes.json()
-            sha = getData.sha
-          }
-        } catch { /* file may not exist yet */ }
-
-        // PUT new content
-        const body: Record<string, string> = {
-          message: `Update ${file.path} from Admin`,
-          content: base64,
-        }
-        if (sha) body.sha = sha
-
-        const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${file.path}`, {
-          method: 'PUT',
+        const blobRes = await fetch(`https://api.github.com/repos/${REPO}/git/blobs`, {
+          method: 'POST',
           headers,
-          body: JSON.stringify(body),
+          body: JSON.stringify({ content, encoding: 'utf-8' }),
         })
-
-        if (!putRes.ok) {
-          const errData = await putRes.json().catch(() => ({}))
-          const msg = (errData as { message?: string }).message || ''
-          console.error(`[Admin] Publish failed for ${file.path}:`, putRes.status, msg)
-          errors.push(`${file.path}: ${putRes.status} ${msg}`)
+        if (!blobRes.ok) {
+          const errData = await blobRes.json().catch(() => ({}))
+          throw new Error(`Failed to create blob for ${file.path}: ${blobRes.status} ${(errData as { message?: string }).message || ''}`)
         }
+        const blobData = await blobRes.json() as { sha: string }
+        treeItems.push({
+          path: file.path,
+          mode: '100644',
+          type: 'blob',
+          sha: blobData.sha,
+        })
       }
 
-      if (errors.length > 0) {
-        throw new Error(`${errors.length} file(s) failed to publish:\n${errors.join('\n')}`)
+      setPublishMsg('Creating tree...')
+
+      // 4. Create a new tree with all file updates
+      const treeRes = await fetch(`https://api.github.com/repos/${REPO}/git/trees`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
+      })
+      if (!treeRes.ok) {
+        const errData = await treeRes.json().catch(() => ({}))
+        throw new Error(`Failed to create tree: ${treeRes.status} ${(errData as { message?: string }).message || ''}`)
+      }
+      const treeData = await treeRes.json() as { sha: string }
+
+      setPublishMsg('Creating commit...')
+
+      // 5. Create a single commit
+      const commitRes = await fetch(`https://api.github.com/repos/${REPO}/git/commits`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          message: 'Update site data from Admin',
+          tree: treeData.sha,
+          parents: [parentSha],
+        }),
+      })
+      if (!commitRes.ok) {
+        const errData = await commitRes.json().catch(() => ({}))
+        throw new Error(`Failed to create commit: ${commitRes.status} ${(errData as { message?: string }).message || ''}`)
+      }
+      const commitData = await commitRes.json() as { sha: string }
+
+      setPublishMsg('Updating ref...')
+
+      // 6. Update the main ref
+      const updateRes = await fetch(`https://api.github.com/repos/${REPO}/git/refs/heads/main`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ sha: commitData.sha, force: false }),
+      })
+      if (!updateRes.ok) {
+        const errData = await updateRes.json().catch(() => ({}))
+        throw new Error(`Failed to update ref: ${updateRes.status} ${(errData as { message?: string }).message || ''}`)
       }
 
       sessionStorage.setItem('gh-token', trimmedToken)
