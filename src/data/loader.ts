@@ -7,18 +7,29 @@ import { services as defaultServices } from './services'
 const STORAGE_KEY = 'admin-content-v2'
 const SYNC_EVENT = 'admin-sync'
 
+function isValidExperience(val: unknown): val is Experience[] {
+  if (!Array.isArray(val)) return false
+  return val.every((item) => item && typeof item === 'object' && 'startDate' in item && 'endDate' in item)
+}
+
 function readLocalStorage<T>(key: string, fallback: T): T {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (!saved) return fallback
     const parsed = JSON.parse(saved) as Record<string, unknown>
-    return (parsed[key] as T) || fallback
+    const val = parsed[key] as T
+    if (val === null || val === undefined) return fallback
+    // Validate array data to prevent .map crashes
+    if (Array.isArray(fallback) && !Array.isArray(val)) return fallback
+    // Validate experiences have required startDate/endDate fields
+    if (key === 'experiences' && !isValidExperience(val)) return fallback
+    return val
   } catch {
     return fallback
   }
 }
 
-const BASE = '/data'
+const BASE = import.meta.env.BASE_URL + 'data'
 
 async function fetchJSON<T>(filename: string, fallback: T): Promise<T> {
   try {

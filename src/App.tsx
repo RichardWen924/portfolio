@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { LanguageProvider } from './i18n'
 import ClickSpark from './components/effects/ClickSpark'
 import Footer from './components/layout/Footer'
@@ -33,8 +34,18 @@ function MainSite() {
   )
 }
 
+function getIsAdmin() {
+  return window.location.hash === '#admin'
+}
+
 export default function App() {
-  const isAdmin = window.location.hash === '#admin'
+  const [isAdmin, setIsAdmin] = useState(getIsAdmin)
+
+  useEffect(() => {
+    const onHashChange = () => setIsAdmin(getIsAdmin())
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   return (
     <LanguageProvider>

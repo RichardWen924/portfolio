@@ -16,10 +16,27 @@ interface StoredData {
   services: Service[]
 }
 
+function isValidExperienceItem(item: unknown): item is Experience {
+  if (!item || typeof item !== 'object') return false
+  const e = item as Record<string, unknown>
+  return typeof e.id === 'string' && typeof e.startDate === 'string' && (e.endDate === null || typeof e.endDate === 'string')
+}
+
+function migrateData(raw: StoredData): StoredData {
+  const exps = raw.experiences
+  if (Array.isArray(exps) && !exps.every(isValidExperienceItem)) {
+    raw.experiences = defaultExperiences
+  }
+  if (!Array.isArray(raw.educations)) raw.educations = defaultEducations
+  if (!Array.isArray(raw.projects)) raw.projects = defaultProjects
+  if (!Array.isArray(raw.services)) raw.services = defaultServices
+  return raw
+}
+
 function loadData(): StoredData {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) return JSON.parse(saved)
+    if (saved) return migrateData(JSON.parse(saved))
   } catch { /* ignore */ }
   return {
     experiences: defaultExperiences,
