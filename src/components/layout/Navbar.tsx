@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import CountUp from '../effects/CountUp'
 import { useVisitorCount } from '../../hooks/useVisitorCount'
 import { useT, LanguageContext } from '../../i18n'
 
@@ -40,65 +39,64 @@ export default function Navbar() {
   }, [navItems])
 
   return (
-    <nav
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-zinc-950/80 backdrop-blur-lg border-b border-white/[0.06]'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 sm:px-16 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a
-          href="#home"
-          className="text-base font-semibold tracking-tight text-white hover:text-violet-400 transition-colors"
-        >
-          Richardzzz
-        </a>
-
-        {/* Nav links - minimal text style */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map(item => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`text-xs uppercase tracking-widest transition-colors duration-300 ${
-                active === item.label
-                  ? 'text-violet-400'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
-
-          {/* Visitor count */}
-          <span className="text-zinc-700 select-none">&middot;</span>
-          <CountUp
-            from={0}
-            to={visitorCount}
-            delay={0.5}
-            duration={3}
-            separator=","
-            className="font-mono text-xs text-zinc-600 tabular-nums"
-          />
-
-          {/* Language toggle */}
-          <span className="text-zinc-700 select-none">&middot;</span>
-          <button
-            onClick={toggleLang}
-            className="font-mono text-xs text-zinc-500 hover:text-violet-400 transition-colors"
+    <>
+      <nav
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-zinc-950/80 backdrop-blur-lg border-b border-white/[0.06]'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-6 sm:px-16 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <a
+            href="#home"
+            className="text-base font-semibold tracking-tight text-white hover:text-violet-400 transition-colors"
           >
-            {lang === 'en' ? '中文' : 'EN'}
-          </button>
-        </div>
+            Richardzzz
+          </a>
 
-        {/* Mobile menu */}
-        <div className="md:hidden">
-          <MobileMenu active={active} navItems={navItems} t={t} />
+          {/* Nav links - minimal text style */}
+          <div className="hidden md:flex items-center gap-8">
+            {navItems.map(item => (
+              <a
+                key={item.label}
+                href={item.href}
+                className={`text-xs uppercase tracking-widest transition-colors duration-300 ${
+                  active === item.label
+                    ? 'text-violet-400'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {item.label}
+              </a>
+            ))}
+
+            {/* Language toggle */}
+            <span className="text-zinc-700 select-none">&middot;</span>
+            <button
+              onClick={toggleLang}
+              className="font-mono text-xs text-zinc-500 hover:text-violet-400 transition-colors"
+            >
+              {lang === 'en' ? '中文' : 'EN'}
+            </button>
+          </div>
+
+          {/* Mobile menu */}
+          <div className="md:hidden">
+            <MobileMenu active={active} navItems={navItems} t={t} />
+          </div>
         </div>
+      </nav>
+
+      {/* Visitor badge - top-right below navbar */}
+      <div className="fixed top-20 right-6 sm:right-16 z-40 flex items-center gap-1.5 pointer-events-none select-none">
+        <span className="font-mono text-xs tabular-nums text-zinc-500">
+          {visitorCount.toLocaleString()}
+        </span>
+        <span className="text-[10px] text-zinc-600 uppercase tracking-wider">viewers</span>
       </div>
-    </nav>
+    </>
   )
 }
 
