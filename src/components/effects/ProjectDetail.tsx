@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useRef, useCallback } from 'react'
 import { LanguageContext, useT } from '../../i18n'
 import type { Project } from '../../data/types'
 import TextType from '../effects/TextType'
@@ -11,6 +11,11 @@ interface ProjectDetailProps {
 export default function ProjectDetail({ project, onClose }: ProjectDetailProps) {
   const { lang } = useContext(LanguageContext)
   const t = useT()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const highlightsRef = useRef<HTMLDivElement>(null)
+  const targetScroll = useRef(0)
+  const currentScroll = useRef(0)
+  const rafId = useRef(0)
 
   // Lock body scroll
   useEffect(() => {
@@ -27,10 +32,51 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
     return () => window.removeEventListener('keydown', handleKey)
   }, [onClose])
 
+  // Smooth scroll engine with damping
+  const lerpScroll = useCallback(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    currentScroll.current += (targetScroll.current - currentScroll.current) * 0.12
+    container.scrollTop = currentScroll.current
+    if (Math.abs(targetScroll.current - currentScroll.current) > 0.5) {
+      rafId.current = requestAnimationFrame(lerpScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      const maxScroll = container.scrollHeight - container.clientHeight
+      targetScroll.current = Math.max(0, Math.min(maxScroll, targetScroll.current + e.deltaY))
+      currentScroll.current = container.scrollTop
+      cancelAnimationFrame(rafId.current)
+      rafId.current = requestAnimationFrame(lerpScroll)
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => {
+      container.removeEventListener('wheel', handleWheel)
+      cancelAnimationFrame(rafId.current)
+    }
+  }, [lerpScroll])
+
+  const scrollToHighlights = () => {
+    const container = scrollContainerRef.current
+    const target = highlightsRef.current
+    if (!container || !target) return
+    targetScroll.current = target.offsetTop
+    currentScroll.current = container.scrollTop
+    cancelAnimationFrame(rafId.current)
+    rafId.current = requestAnimationFrame(lerpScroll)
+  }
+
   const paragraphs = project.longDescription[lang].split('\n\n')
 
   return (
-    <div className="fixed inset-0 z-40 bg-zinc-950 overflow-y-auto">
+    <div ref={scrollContainerRef} className="fixed inset-0 z-40 bg-zinc-950 overflow-y-auto">
       {/* Close background */}
       <div className="fixed inset-0 bg-black/80" onClick={onClose} />
 
@@ -39,8 +85,8 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[100vh]">
           {/* Left: Images */}
           <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col gap-4 p-4 lg:p-6">
-            {/* Top image - largest */}
-            <div className="flex-1 min-h-0 rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
+            {/* Top image */}
+            <div className="h-[55%] flex-shrink-0 rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
               <div className="w-full h-full bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-zinc-900 flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center opacity-15">
                   <div className="w-48 h-48 rounded-full border border-white/20" />
@@ -51,7 +97,7 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
             </div>
 
             {/* Bottom two images - equal size, side by side */}
-            <div className="grid grid-cols-2 gap-4 h-[30%] flex-shrink-0">
+            <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
               <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
                 <div className="w-full h-full bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-zinc-900 flex items-center justify-center">
                   <div className="opacity-15">
@@ -128,8 +174,34 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
           </div>
         </div>
 
+        {/* Scroll-down indicator */}
+        <div className="relative -mt-20 pb-8 flex justify-end px-6 sm:px-16 pointer-events-none">
+          <button
+            onClick={scrollToHighlights}
+            className="pointer-events-auto group flex flex-col items-center gap-2 text-zinc-600 hover:text-violet-400 transition-colors duration-300"
+            aria-label="Scroll to highlights"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-widest">
+              {lang === 'zh' ? '查看亮点' : 'Highlights'}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="animate-bounce"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </button>
+        </div>
+
         {/* Highlights section */}
-        <div className="border-t border-white/[0.06]">
+        <div ref={highlightsRef} className="border-t border-white/[0.06]">
           <div className="max-w-4xl mx-auto px-6 sm:px-16 py-24 md:py-32">
             <p className="font-mono text-xs uppercase tracking-widest text-violet-400/60 mb-16">
               {lang === 'zh' ? '优化亮点' : 'Highlights'}
