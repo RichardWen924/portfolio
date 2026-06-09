@@ -1,12 +1,13 @@
 import { useContext } from 'react'
 import { useT, LanguageContext } from '../../i18n'
-import { useServices } from '../../data/loader'
+import { useServices, useServicesContent } from '../../data/loader'
 import FadeContent from '../effects/FadeContent'
 
 export default function ServicesSection() {
   const t = useT()
   const { lang } = useContext(LanguageContext)
   const services = useServices()
+  const servicesContent = useServicesContent()
 
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 sm:px-16">
@@ -28,10 +29,10 @@ export default function ServicesSection() {
         {/* Subheader */}
         <FadeContent blur={true} duration={1000}>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
-            {t.services.heading}
+            {servicesContent.heading[lang]}
           </h2>
           <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-16">
-            {t.services.subDescription}
+            {servicesContent.subDescription[lang]}
           </p>
         </FadeContent>
 

@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import type { Experience, Education, Project, Service, AboutContent } from './types'
+import type { Experience, Education, Project, Service, AboutContent, ServicesContent } from './types'
 import { experiences as defaultExperiences, educations as defaultEducations } from './experience'
 import { projects as defaultProjects } from './projects'
 import { services as defaultServices } from './services'
 import { defaultAbout } from './about'
+import { defaultServicesContent } from './services-content'
 
 const STORAGE_KEY = 'admin-content-v2'
 const SYNC_EVENT = 'admin-sync'
@@ -119,6 +120,20 @@ export function useAbout(): AboutContent {
   const [data, setData] = useState(defaultAbout)
   const refresh = useCallback(() => {
     loadData<AboutContent>('about', 'about.json', defaultAbout).then(setData)
+  }, [])
+  useEffect(refresh, [refresh])
+  useEffect(() => {
+    const handler = () => refresh()
+    window.addEventListener(SYNC_EVENT, handler)
+    return () => window.removeEventListener(SYNC_EVENT, handler)
+  }, [refresh])
+  return data
+}
+
+export function useServicesContent(): ServicesContent {
+  const [data, setData] = useState(defaultServicesContent)
+  const refresh = useCallback(() => {
+    loadData<ServicesContent>('servicesContent', 'services-content.json', defaultServicesContent).then(setData)
   }, [])
   useEffect(refresh, [refresh])
   useEffect(() => {

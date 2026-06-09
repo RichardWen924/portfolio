@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { useVisitorCount } from '../../hooks/useVisitorCount'
 import { useT, LanguageContext } from '../../i18n'
 
-const navHrefs = ['#about', '#experience', '#skills', '#projects', '#contact']
+const navHrefs = ['#about', '#experience', '#skills', '#projects', '#services', '#contact']
 
 export default function Navbar() {
   const t = useT()
@@ -16,7 +16,8 @@ export default function Navbar() {
     { label: t.nav.experience, href: navHrefs[1] },
     { label: t.nav.skills, href: navHrefs[2] },
     { label: t.nav.projects, href: navHrefs[3] },
-    { label: t.nav.contact, href: navHrefs[4] },
+    { label: t.nav.services, href: navHrefs[4] },
+    { label: t.nav.contact, href: navHrefs[5] },
   ]
 
   useEffect(() => {

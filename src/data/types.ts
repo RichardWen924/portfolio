@@ -46,3 +46,8 @@ export interface AboutContent {
   statProjects: number;
   statTech: number;
 }
+
+export interface ServicesContent {
+  heading: { en: string; zh: string };
+  subDescription: { en: string; zh: string };
+}

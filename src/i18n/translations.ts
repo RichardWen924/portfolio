@@ -5,6 +5,7 @@ export const translations = {
       experience: 'Experience',
       skills: 'Skills',
       projects: 'Projects',
+      services: 'Services',
       contact: 'Contact',
       toggleMenu: 'Toggle menu',
     },
@@ -84,6 +85,7 @@ export const translations = {
       experience: '\u7ECF\u5386',
       skills: '\u6280\u80FD',
       projects: '\u9879\u76EE',
+      services: '\u670D\u52A1',
       contact: '\u8054\u7CFB',
       toggleMenu: '\u5207\u6362\u83DC\u5355',
     },
@@ -142,7 +144,7 @@ export const translations = {
     },
     services: {
       sectionId: '05 / \u670D\u52A1',
-      heading: '\u670D\u52A1\u8303\u56F4',
+      heading: '\u6211\u80FD\u505A\u4EC0\u4E48\uFF1F',
       subDescription: '\u5168\u6D41\u7A0B \u00b7 \u72EC\u7ACB\u6216\u534F\u4F5C',
     },
     footer: {
