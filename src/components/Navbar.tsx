@@ -3,15 +3,15 @@ import CountUp from './CountUp'
 import { useVisitorCount } from '../hooks/useVisitorCount'
 
 const navItems = [
-  { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
+  { label: 'Experience', href: '#experience' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Contact', href: '#contact' },
 ]
 
 export default function Navbar() {
-  const [active, setActive] = useState('Home')
+  const [active, setActive] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const visitorCount = useVisitorCount()
 
@@ -37,49 +37,58 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-zinc-950/80 backdrop-blur-lg border-b border-white/5' : 'bg-transparent'
+        scrolled
+          ? 'bg-zinc-950/80 backdrop-blur-lg border-b border-white/[0.06]'
+          : 'bg-transparent'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#home" className="text-lg font-semibold tracking-tight text-violet-400">
+      <div className="max-w-6xl mx-auto px-6 sm:px-16 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <a
+          href="#home"
+          className="text-base font-semibold tracking-tight text-white hover:text-violet-400 transition-colors"
+        >
           Richardzzz
         </a>
-        <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-zinc-500">
-            <CountUp
-              from={0}
-              to={visitorCount}
-              delay={0.5}
-              duration={3}
-              separator=","
-              className="font-mono text-xs text-violet-400/80 tabular-nums"
-            />
-          </div>
-          <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 backdrop-blur-sm">
-            {navItems.map(item => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={`px-4 py-1.5 rounded-full text-sm transition-all duration-300 ${
-                  active === item.label
-                    ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/25'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
+
+        {/* Nav links - minimal text style */}
+        <div className="hidden md:flex items-center gap-8">
+          {navItems.map(item => (
+            <a
+              key={item.label}
+              href={item.href}
+              className={`text-xs uppercase tracking-widest transition-colors duration-300 ${
+                active === item.label
+                  ? 'text-violet-400'
+                  : 'text-zinc-500 hover:text-zinc-300'
+              }`}
+            >
+              {item.label}
+            </a>
+          ))}
+
+          {/* Visitor count */}
+          <span className="text-zinc-700 select-none">&middot;</span>
+          <CountUp
+            from={0}
+            to={visitorCount}
+            delay={0.5}
+            duration={3}
+            separator=","
+            className="font-mono text-xs text-zinc-600 tabular-nums"
+          />
         </div>
+
+        {/* Mobile menu */}
         <div className="md:hidden">
-          <MobileMenu />
+          <MobileMenu active={active} />
         </div>
       </div>
     </nav>
   )
 }
 
-function MobileMenu() {
+function MobileMenu({ active }: { active: string }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -93,18 +102,22 @@ function MobileMenu() {
           {open ? (
             <path d="M18 6L6 18M6 6l12 12" />
           ) : (
-            <path d="M3 12h18M3 6h18M3 18h18" />
+            <path d="M3 4h18M3 12h18M3 20h18" />
           )}
         </svg>
       </button>
       {open && (
-        <div className="absolute top-full right-4 mt-2 bg-zinc-900 border border-white/10 rounded-2xl p-2 shadow-2xl">
+        <div className="absolute top-full right-6 mt-2 bg-zinc-900 border border-white/[0.06] py-3 px-5 shadow-2xl">
           {navItems.map(item => (
             <a
               key={item.label}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 rounded-xl text-sm text-zinc-400 hover:text-white hover:bg-white/5"
+              className={`block py-2 text-xs uppercase tracking-widest transition-colors ${
+                active === item.label
+                  ? 'text-violet-400'
+                  : 'text-zinc-500 hover:text-zinc-300'
+              }`}
             >
               {item.label}
             </a>
