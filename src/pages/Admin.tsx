@@ -18,6 +18,7 @@ interface StoredData {
   services: Service[]
   about: AboutContent
   servicesContent: ServicesContent
+  visitorCount: number
 }
 
 function isValidExperienceItem(item: unknown): item is Experience {
@@ -57,13 +58,26 @@ function migrateData(raw: StoredData): StoredData {
   if (!Array.isArray(raw.services)) raw.services = defaultServices
   if (!raw.about || typeof raw.about !== 'object' || typeof raw.about.heading !== 'object') raw.about = defaultAbout
   if (!raw.servicesContent || typeof raw.servicesContent !== 'object' || typeof raw.servicesContent.heading !== 'object') raw.servicesContent = defaultServicesContent
+  if (typeof raw.visitorCount !== 'number') raw.visitorCount = 0
   return raw
+}
+
+function getVisitorCount(): number {
+  const vc = localStorage.getItem('visitor_count')
+  if (vc !== null) return parseInt(vc, 10) || 0
+  return 0
 }
 
 function loadData(): StoredData {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) return migrateData(JSON.parse(saved))
+    if (saved) {
+      const parsed = migrateData(JSON.parse(saved))
+      // Sync visitorCount from the real-time counter
+      const live = getVisitorCount()
+      if (live > parsed.visitorCount) parsed.visitorCount = live
+      return parsed
+    }
   } catch { /* ignore */ }
   return {
     experiences: defaultExperiences,
@@ -72,6 +86,7 @@ function loadData(): StoredData {
     services: defaultServices,
     about: defaultAbout,
     servicesContent: defaultServicesContent,
+    visitorCount: getVisitorCount(),
   }
 }
 
@@ -91,6 +106,7 @@ const DATA_FILES: { key: keyof StoredData; path: string }[] = [
   { key: 'services', path: 'public/data/services.json' },
   { key: 'about', path: 'public/data/about.json' },
   { key: 'servicesContent', path: 'public/data/services-content.json' },
+  { key: 'visitorCount', path: 'public/data/visitor-count.json' },
 ]
 
 export default function Admin() {
@@ -133,6 +149,7 @@ export default function Admin() {
       services: defaultServices,
       about: defaultAbout,
       servicesContent: defaultServicesContent,
+      visitorCount: 0,
     }
     setData(defaults)
     saveData(defaults)
