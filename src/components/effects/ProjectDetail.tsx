@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useCallback } from 'react'
+import { useContext, useEffect, useRef, useCallback, useState } from 'react'
 import { LanguageContext, useT } from '../../i18n'
 import type { Project } from '../../data/types'
 import TextType from '../effects/TextType'
@@ -22,15 +22,6 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
   }, [])
-
-  // Close on Escape
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose])
 
   // Smooth scroll engine with damping
   const lerpScroll = useCallback(() => {
@@ -75,6 +66,26 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
 
   const paragraphs = project.longDescription?.[lang]?.split('\n\n') ?? []
   const images = project.images || []
+  const [imageIndex, setImageIndex] = useState(0)
+
+  const goNext = useCallback(() => {
+    setImageIndex(prev => (prev < images.length - 1 ? prev + 1 : prev))
+  }, [images.length])
+
+  const goPrev = useCallback(() => {
+    setImageIndex(prev => (prev > 0 ? prev - 1 : prev))
+  }, [])
+
+  // Keyboard: Escape to close, arrows to flip images
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') goPrev()
+      if (e.key === 'ArrowRight') goNext()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClose, goPrev, goNext])
 
   return (
     <div ref={scrollContainerRef} className="fixed inset-0 z-40 bg-zinc-950 overflow-y-auto">
@@ -84,13 +95,11 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
       <div className="relative">
         {/* Two-column hero area */}
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[100vh]">
-          {/* Left: Images */}
-          <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col gap-4 p-4 lg:p-6">
-            {/* Top image */}
-            <div className="h-[55%] flex-shrink-0 rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-              {images[0] ? (
-                <img src={images[0]} alt="" className="w-full h-full object-cover" />
-              ) : (
+          {/* Left: Image Carousel */}
+          <div className="lg:sticky lg:top-6 lg:h-screen flex flex-col items-center justify-center p-4 lg:p-6">
+            {images.length === 0 ? (
+              /* Placeholder when no images */
+              <div className="w-full h-[60%] rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
                 <div className="w-full h-full bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-zinc-900 flex items-center justify-center">
                   <div className="relative w-full h-full flex items-center justify-center opacity-15">
                     <div className="w-48 h-48 rounded-full border border-white/20" />
@@ -98,36 +107,64 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
                     <div className="absolute w-24 h-24 rounded-full bg-violet-500/30 blur-3xl" />
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="w-full h-[60%] flex flex-col gap-3 min-h-0">
+                {/* Image display */}
+                <div className="flex-1 relative rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05] min-h-0">
+                  <img
+                    key={imageIndex}
+                    src={images[imageIndex]}
+                    alt=""
+                    className="w-full h-full object-contain animate-in fade-in zoom-in-95 duration-300"
+                  />
 
-            {/* Bottom two images - equal size, side by side */}
-            <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
-              <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-                {images[1] ? (
-                  <img src={images[1]} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-zinc-900 flex items-center justify-center">
-                    <div className="opacity-15">
-                      <div className="w-20 h-20 rounded-full border border-white/20" />
-                      <div className="absolute w-14 h-14 rounded-full bg-emerald-500/20 blur-2xl" />
-                    </div>
+                  {/* Prev button */}
+                  {images.length > 1 && imageIndex > 0 && (
+                    <button
+                      onClick={goPrev}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white/70 hover:text-white transition-colors"
+                      aria-label="Previous image"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* Next button */}
+                  {images.length > 1 && imageIndex < images.length - 1 && (
+                    <button
+                      onClick={goNext}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white/70 hover:text-white transition-colors"
+                      aria-label="Next image"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                {/* Pagination dots */}
+                {images.length > 1 && (
+                  <div className="flex items-center justify-center gap-2">
+                    {images.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setImageIndex(i)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          i === imageIndex
+                            ? 'bg-violet-400 w-6'
+                            : 'bg-zinc-600 hover:bg-zinc-500'
+                        }`}
+                        aria-label={`Image ${i + 1}`}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
-              <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-                {images[2] ? (
-                  <img src={images[2]} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-amber-600/20 via-orange-600/10 to-zinc-900 flex items-center justify-center">
-                    <div className="opacity-15">
-                      <div className="w-20 h-20 rounded-full border border-white/20" />
-                      <div className="absolute w-14 h-14 rounded-full bg-amber-500/20 blur-2xl" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right: Content */}

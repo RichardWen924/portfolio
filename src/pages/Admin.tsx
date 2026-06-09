@@ -599,12 +599,14 @@ function EditModal({
                         </div>
                       </div>
                     ))}
-                    <button
-                      onClick={addImage}
-                      className="px-3 py-1.5 text-xs text-violet-400 hover:text-violet-300 border border-violet-400/20 hover:border-violet-400/40 rounded transition-colors"
-                    >
-                      + Add Image
-                    </button>
+                    {imgs.length < 3 && (
+                      <button
+                        onClick={addImage}
+                        className="px-3 py-1.5 text-xs text-violet-400 hover:text-violet-300 border border-violet-400/20 hover:border-violet-400/40 rounded transition-colors"
+                      >
+                        + Add Image
+                      </button>
+                    )}
                   </div>
                 </div>
               )
