@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import CountUp from './CountUp'
+import { useVisitorCount } from '../hooks/useVisitorCount'
 
 const navItems = [
   { label: 'Home', href: '#home' },
@@ -11,6 +13,7 @@ const navItems = [
 export default function Navbar() {
   const [active, setActive] = useState('Home')
   const [scrolled, setScrolled] = useState(false)
+  const visitorCount = useVisitorCount()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,20 +44,32 @@ export default function Navbar() {
         <a href="#home" className="text-lg font-semibold tracking-tight text-violet-400">
           Richardzzz
         </a>
-        <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 backdrop-blur-sm">
-          {navItems.map(item => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`px-4 py-1.5 rounded-full text-sm transition-all duration-300 ${
-                active === item.label
-                  ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/25'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
+        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-zinc-500">
+            <CountUp
+              from={0}
+              to={visitorCount}
+              delay={0.5}
+              duration={3}
+              separator=","
+              className="font-mono text-xs text-violet-400/80 tabular-nums"
+            />
+          </div>
+          <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 backdrop-blur-sm">
+            {navItems.map(item => (
+              <a
+                key={item.label}
+                href={item.href}
+                className={`px-4 py-1.5 rounded-full text-sm transition-all duration-300 ${
+                  active === item.label
+                    ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/25'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
         </div>
         <div className="md:hidden">
           <MobileMenu />

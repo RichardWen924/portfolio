@@ -1,9 +1,9 @@
 import FadeContent from './FadeContent'
-import Counter from './Counter'
+import CountUp from './CountUp'
 
 const stats = [
-  { value: 5, label: 'Years Coding', suffix: '+' },
-  { value: 30, label: 'Projects Built', suffix: '+' },
+  { value: 4, label: 'Years Coding', suffix: '+' },
+  { value: 15, label: 'Projects Built', suffix: '+' },
   { value: 10, label: 'Technologies', suffix: '+' },
 ]
 
@@ -51,15 +51,12 @@ export default function AboutSection() {
                   className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 text-center hover:bg-white/[0.05] transition-colors"
                 >
                   <div className="text-violet-400 text-3xl md:text-4xl font-bold tracking-tight mb-1">
-                    <Counter
-                      value={stat.value}
-                      fontSize={36}
-                      padding={4}
-                      textColor="#a78bfa"
-                      fontWeight="700"
-                      gradientFrom="rgba(9,9,11,1)"
-                      gradientTo="rgba(9,9,11,0)"
-                      gradientHeight={12}
+                    <CountUp
+                      from={0}
+                      to={stat.value}
+                      delay={0.5}
+                      duration={3}
+                      className="text-violet-400"
                     />
                     <span className="text-violet-400">{stat.suffix}</span>
                   </div>
