@@ -1,35 +1,11 @@
-import { useT } from '../../i18n'
+import { useContext } from 'react'
+import { useT, LanguageContext } from '../../i18n'
+import { projects } from '../../data/projects'
 import FadeContent from '../effects/FadeContent'
 
 export default function ProjectsSection() {
   const t = useT()
-
-  const projects = [
-    {
-      category: t.projects.proj1.category,
-      title: t.projects.proj1.title,
-      description: t.projects.proj1.description,
-      attribution: t.projects.proj1.attribution,
-      tags: ['Java', 'Spring Boot', 'LLM', 'Kafka'],
-      href: 'https://github.com/RichardWen924',
-    },
-    {
-      category: t.projects.proj2.category,
-      title: t.projects.proj2.title,
-      description: t.projects.proj2.description,
-      attribution: t.projects.proj2.attribution,
-      tags: ['Spring Cloud', 'Redis', 'Docker', 'Nginx'],
-      href: 'https://github.com/RichardWen924',
-    },
-    {
-      category: t.projects.proj3.category,
-      title: t.projects.proj3.title,
-      description: t.projects.proj3.description,
-      attribution: t.projects.proj3.attribution,
-      tags: ['Kafka', 'PostgreSQL', 'MongoDB', 'Python'],
-      href: 'https://github.com/RichardWen924',
-    },
-  ]
+  const { lang } = useContext(LanguageContext)
 
   return (
     <section id="projects" className="relative py-24 md:py-32 px-6 sm:px-16">
@@ -59,7 +35,7 @@ export default function ProjectsSection() {
         {/* Flat project list */}
         <div>
           {projects.map((project, i) => (
-            <FadeContent key={project.title} blur={true} duration={800} delay={200 + i * 150}>
+            <FadeContent key={project.id} blur={true} duration={800} delay={200 + i * 150}>
               <a
                 href={project.href}
                 target="_blank"
@@ -76,17 +52,17 @@ export default function ProjectsSection() {
                   <div className="flex-1 min-w-0">
                     {/* Category */}
                     <span className="font-mono text-xs uppercase tracking-wider text-violet-400/80">
-                      {project.category}
+                      {project.category[lang]}
                     </span>
 
                     {/* Title */}
                     <h3 className="text-xl md:text-2xl font-bold text-white mt-2 mb-2 group-hover:text-violet-300 transition-colors">
-                      {project.title}
+                      {project.title[lang]}
                     </h3>
 
                     {/* Description */}
                     <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl">
-                      {project.description}
+                      {project.description[lang]}
                     </p>
 
                     {/* Tags + CTA */}
@@ -103,7 +79,7 @@ export default function ProjectsSection() {
                         <span className="text-zinc-700">&middot;</span>
                       )}
                       <span className="text-xs text-zinc-500">
-                        {project.attribution}
+                        {project.attribution[lang]}
                       </span>
                       <span className="inline-flex items-center gap-1 text-xs text-zinc-600 group-hover:text-violet-400/80 transition-colors ml-auto opacity-0 group-hover:opacity-100">
                         {t.projects.viewProject}

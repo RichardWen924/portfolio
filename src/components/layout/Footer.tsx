@@ -7,6 +7,14 @@ export default function Footer() {
   return (
     <footer id="contact" className="relative py-16 px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto text-center">
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-violet-400/60 flex-shrink-0">
+            <circle cx="12" cy="12" r="3" fill="currentColor" />
+            <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+            <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="0.3" opacity="0.2" />
+          </svg>
+          <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">{t.footer.sectionId}</span>
+        </div>
         <p className="text-violet-400 text-sm font-medium tracking-wider mb-4">{t.footer.label}</p>
         <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
           {t.footer.heading}

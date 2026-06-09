@@ -1,35 +1,11 @@
-import { useT } from '../../i18n'
+import { useContext } from 'react'
+import { useT, LanguageContext } from '../../i18n'
+import { experiences, educations } from '../../data/experience'
 import FadeContent from '../effects/FadeContent'
 
 export default function ExperienceSection() {
   const t = useT()
-
-  const experiences = [
-    {
-      role: t.experience.exp1.role,
-      company: t.experience.exp1.company,
-      date: t.experience.exp1.date,
-      description: t.experience.exp1.description,
-    },
-    {
-      role: t.experience.exp2.role,
-      company: t.experience.exp2.company,
-      date: t.experience.exp2.date,
-      description: t.experience.exp2.description,
-    },
-    {
-      role: t.experience.exp3.role,
-      company: t.experience.exp3.company,
-      date: t.experience.exp3.date,
-      description: t.experience.exp3.description,
-    },
-  ]
-
-  const education = {
-    school: t.experience.education.school,
-    degree: t.experience.education.degree,
-    date: t.experience.education.date,
-  }
+  const { lang } = useContext(LanguageContext)
 
   return (
     <section id="experience" className="relative py-24 md:py-32 px-6 sm:px-16">
@@ -56,53 +32,66 @@ export default function ExperienceSection() {
           </p>
         </FadeContent>
 
-        {/* Experience list */}
+        {/* Education */}
+        <FadeContent blur={true} duration={800} delay={200}>
+          <p className="font-mono text-xs uppercase tracking-widest text-violet-400/60 mb-6">
+            {t.experience.educationLabel}
+          </p>
+          <div className="space-y-8 mb-16">
+            {educations.map(edu => (
+              <div key={edu.id}>
+                <h3 className="text-lg md:text-xl font-bold text-white mb-1">
+                  {edu.school[lang]}
+                </h3>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span className="text-zinc-400 text-sm">
+                    {edu.degree[lang]}
+                  </span>
+                  <span className="text-zinc-700">&middot;</span>
+                  <span className="font-mono text-xs text-zinc-500 tracking-wide">
+                    {edu.date[lang]}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FadeContent>
+
+        {/* Career */}
+        <FadeContent blur={true} duration={800} delay={400}>
+          <p className="font-mono text-xs uppercase tracking-widest text-violet-400/60 mb-6">
+            {t.experience.careerLabel}
+          </p>
+        </FadeContent>
+
         <div className="space-y-10">
           {experiences.map((exp, i) => (
-            <FadeContent key={i} blur={true} duration={800} delay={200 + i * 150}>
+            <FadeContent key={exp.id} blur={true} duration={800} delay={500 + i * 150}>
               <div className="group">
                 {/* Role */}
                 <h3 className="text-lg md:text-xl font-bold text-white mb-1">
-                  {exp.role}
+                  {exp.role[lang]}
                 </h3>
 
                 {/* Company · Date */}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-4">
                   <span className="text-zinc-400 text-sm">
-                    {exp.company}
+                    {exp.company[lang]}
                   </span>
                   <span className="text-zinc-700">&middot;</span>
                   <span className="font-mono text-xs text-zinc-500 tracking-wide">
-                    {exp.date}
+                    {exp.date[lang]}
                   </span>
                 </div>
 
                 {/* Description */}
                 <p className="text-zinc-500 text-sm md:text-base leading-relaxed max-w-2xl">
-                  {exp.description}
+                  {exp.description[lang]}
                 </p>
               </div>
             </FadeContent>
           ))}
         </div>
-
-        {/* Education */}
-        <FadeContent blur={true} duration={800} delay={800}>
-          <div className="mt-16 pt-10 border-t border-white/[0.06]">
-            <h3 className="text-lg md:text-xl font-bold text-white mb-1">
-              {education.school}
-            </h3>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="text-zinc-400 text-sm">
-                {education.degree}
-              </span>
-              <span className="text-zinc-700">&middot;</span>
-              <span className="font-mono text-xs text-zinc-500 tracking-wide">
-                {education.date}
-              </span>
-            </div>
-          </div>
-        </FadeContent>
       </div>
     </section>
   )

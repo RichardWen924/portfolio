@@ -1,36 +1,11 @@
-import { useT } from '../../i18n'
+import { useContext } from 'react'
+import { useT, LanguageContext } from '../../i18n'
+import { services } from '../../data/services'
 import FadeContent from '../effects/FadeContent'
 
 export default function ServicesSection() {
   const t = useT()
-
-  const services = [
-    {
-      title: t.services.svc1.title,
-      description: t.services.svc1.description,
-      tags: ['Spring Boot', 'Spring Cloud', 'Kafka', 'RabbitMQ', 'Docker'],
-    },
-    {
-      title: t.services.svc2.title,
-      description: t.services.svc2.description,
-      tags: ['LLM', 'Agent', 'RAG', 'Ollama', 'Python'],
-    },
-    {
-      title: t.services.svc3.title,
-      description: t.services.svc3.description,
-      tags: ['REST', 'API Gateway', 'Nginx', 'Redis', 'OAuth2'],
-    },
-    {
-      title: t.services.svc4.title,
-      description: t.services.svc4.description,
-      tags: ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis'],
-    },
-    {
-      title: t.services.svc5.title,
-      description: t.services.svc5.description,
-      tags: ['Docker', 'Nginx', 'Git', 'Kibana', 'CI/CD'],
-    },
-  ]
+  const { lang } = useContext(LanguageContext)
 
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 sm:px-16">
@@ -62,7 +37,7 @@ export default function ServicesSection() {
         {/* Flat service list */}
         <div>
           {services.map((svc, i) => (
-            <FadeContent key={svc.title} blur={true} duration={800} delay={200 + i * 150}>
+            <FadeContent key={svc.id} blur={true} duration={800} delay={200 + i * 150}>
               <div className="group py-6 border-t border-white/[0.06] hover:border-white/[0.12] transition-colors">
                 <div className="flex items-start gap-8">
                   {/* Number */}
@@ -74,12 +49,12 @@ export default function ServicesSection() {
                   <div className="flex-1 min-w-0">
                     {/* Title */}
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-violet-300 transition-colors">
-                      {svc.title}
+                      {svc.title[lang]}
                     </h3>
 
                     {/* Description */}
                     <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl mb-4">
-                      {svc.description}
+                      {svc.description[lang]}
                     </p>
 
                     {/* Tags */}
