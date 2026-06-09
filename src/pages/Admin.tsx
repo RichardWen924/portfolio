@@ -98,6 +98,15 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
 }
 
+function toBase64(str: string): string {
+  const bytes = new TextEncoder().encode(str)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
 const REPO = 'RichardWen924/portfolio'
 const DATA_FILES: { key: keyof StoredData; path: string }[] = [
   { key: 'experiences', path: 'public/data/experiences.json' },
@@ -175,24 +184,42 @@ export default function Admin() {
   }, [data, tab])
 
   const handlePublish = useCallback(async () => {
-    if (!token.trim()) {
+    const trimmedToken = token.trim()
+    if (!trimmedToken) {
       setPublishMsg('Please enter a GitHub token first.')
       return
     }
     if (!confirm('Publish all changes to GitHub? This will update the live website in ~1-2 minutes.')) return
 
     setPublishing(true)
-    setPublishMsg('Publishing...')
+    setPublishMsg('Validating token...')
 
     const headers = {
-      Authorization: `token ${token.trim()}`,
+      Authorization: `token ${trimmedToken}`,
       'Content-Type': 'application/json',
+      Accept: 'application/vnd.github+json',
     }
 
     try {
+      // Validate token first with a lightweight API call
+      const userRes = await fetch('https://api.github.com/user', { headers })
+      if (!userRes.ok) {
+        const errData = await userRes.json().catch(() => ({}))
+        const msg = (errData as { message?: string }).message || ''
+        if (userRes.status === 401) {
+          throw new Error(`Token invalid or expired: ${msg}. Generate a new token at github.com/settings/tokens`)
+        }
+        if (userRes.status === 403 && msg.includes('SSO')) {
+          throw new Error(`SSO required: ${msg}`)
+        }
+        throw new Error(`Token validation failed (${userRes.status}): ${msg}`)
+      }
+
+      const errors: string[] = []
       for (const file of DATA_FILES) {
+        setPublishMsg(`Publishing ${file.path}...`)
         const content = JSON.stringify(data[file.key], null, 2)
-        const base64 = btoa(unescape(encodeURIComponent(content)))
+        const base64 = toBase64(content)
 
         // Get current file SHA
         let sha = ''
@@ -219,14 +246,20 @@ export default function Admin() {
 
         if (!putRes.ok) {
           const errData = await putRes.json().catch(() => ({}))
-          throw new Error(`${file.path}: ${putRes.status} ${(errData as { message?: string }).message || ''}`)
+          const msg = (errData as { message?: string }).message || ''
+          console.error(`[Admin] Publish failed for ${file.path}:`, putRes.status, msg)
+          errors.push(`${file.path}: ${putRes.status} ${msg}`)
         }
       }
 
-      // Save token to sessionStorage
-      sessionStorage.setItem('gh-token', token.trim())
+      if (errors.length > 0) {
+        throw new Error(`${errors.length} file(s) failed to publish:\n${errors.join('\n')}`)
+      }
+
+      sessionStorage.setItem('gh-token', trimmedToken)
       setPublishMsg('Published! The website will update in 1-2 minutes.')
     } catch (err) {
+      console.error('[Admin] Publish error:', err)
       setPublishMsg(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
     } finally {
       setPublishing(false)
