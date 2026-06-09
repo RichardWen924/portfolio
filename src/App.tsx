@@ -1,30 +1,35 @@
-import Navbar from './components/Navbar'
-import HeroSection from './components/HeroSection'
-import AboutSection from './components/AboutSection'
-import ExperienceSection from './components/ExperienceSection'
-import SkillsSection from './components/SkillsSection'
-import ProjectsSection from './components/ProjectsSection'
-import Footer from './components/Footer'
-import ClickSpark from './components/ClickSpark'
+import { LanguageProvider } from './i18n'
+import ClickSpark from './components/effects/ClickSpark'
+import Footer from './components/layout/Footer'
+import Navbar from './components/layout/Navbar'
+import AboutSection from './components/sections/AboutSection'
+import ExperienceSection from './components/sections/ExperienceSection'
+import HeroSection from './components/sections/HeroSection'
+import ProjectsSection from './components/sections/ProjectsSection'
+import ServicesSection from './components/sections/ServicesSection'
+import SkillsSection from './components/sections/SkillsSection'
 
 export default function App() {
   return (
-    <ClickSpark
-      sparkColor="#a78bfa"
-      sparkSize={8}
-      sparkRadius={20}
-      sparkCount={6}
-      duration={500}
-    >
-      <div className="min-h-screen bg-zinc-950 text-white">
-        <Navbar />
-        <HeroSection />
-        <AboutSection />
-        <ExperienceSection />
-        <SkillsSection />
-        <ProjectsSection />
-        <Footer />
-      </div>
-    </ClickSpark>
+    <LanguageProvider>
+      <ClickSpark
+        sparkColor="#a78bfa"
+        sparkSize={8}
+        sparkRadius={20}
+        sparkCount={6}
+        duration={500}
+      >
+        <div className="min-h-screen bg-zinc-950 text-white">
+          <Navbar />
+          <HeroSection />
+          <AboutSection />
+          <ExperienceSection />
+          <SkillsSection />
+          <ProjectsSection />
+          <ServicesSection />
+          <Footer />
+        </div>
+      </ClickSpark>
+    </LanguageProvider>
   )
 }

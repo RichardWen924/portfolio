@@ -1,33 +1,36 @@
-import FadeContent from './FadeContent'
-
-const projects = [
-  {
-    category: 'Backend & LLM',
-    title: 'LLM Agent Platform',
-    description: 'Enterprise-grade platform for building and deploying LLM-powered agents with seamless integration into existing microservice ecosystems.',
-    attribution: 'Personal Project',
-    tags: ['Java', 'Spring Boot', 'LLM', 'Kafka'],
-    href: 'https://github.com/RichardWen924',
-  },
-  {
-    category: 'Distributed Systems',
-    title: 'Microservice Gateway',
-    description: 'High-performance API gateway with intelligent routing, rate limiting, and circuit breaker patterns for distributed backend systems.',
-    attribution: 'Personal Project',
-    tags: ['Spring Cloud', 'Redis', 'Docker', 'Nginx'],
-    href: 'https://github.com/RichardWen924',
-  },
-  {
-    category: 'Data Engineering',
-    title: 'Real-time Data Pipeline',
-    description: 'Streaming data processing pipeline handling millions of events per day with exactly-once semantics and fault tolerance.',
-    attribution: 'Personal Project',
-    tags: ['Kafka', 'PostgreSQL', 'MongoDB', 'Python'],
-    href: 'https://github.com/RichardWen924',
-  },
-]
+import { useT } from '../../i18n'
+import FadeContent from '../effects/FadeContent'
 
 export default function ProjectsSection() {
+  const t = useT()
+
+  const projects = [
+    {
+      category: t.projects.proj1.category,
+      title: t.projects.proj1.title,
+      description: t.projects.proj1.description,
+      attribution: t.projects.proj1.attribution,
+      tags: ['Java', 'Spring Boot', 'LLM', 'Kafka'],
+      href: 'https://github.com/RichardWen924',
+    },
+    {
+      category: t.projects.proj2.category,
+      title: t.projects.proj2.title,
+      description: t.projects.proj2.description,
+      attribution: t.projects.proj2.attribution,
+      tags: ['Spring Cloud', 'Redis', 'Docker', 'Nginx'],
+      href: 'https://github.com/RichardWen924',
+    },
+    {
+      category: t.projects.proj3.category,
+      title: t.projects.proj3.title,
+      description: t.projects.proj3.description,
+      attribution: t.projects.proj3.attribution,
+      tags: ['Kafka', 'PostgreSQL', 'MongoDB', 'Python'],
+      href: 'https://github.com/RichardWen924',
+    },
+  ]
+
   return (
     <section id="projects" className="relative py-24 md:py-32 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
@@ -39,17 +42,17 @@ export default function ProjectsSection() {
               <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
               <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="0.3" opacity="0.2" />
             </svg>
-            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">02 / Selected Work</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">{t.projects.sectionId}</span>
           </div>
         </FadeContent>
 
         {/* Section heading */}
         <FadeContent blur={true} duration={1000}>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
-            Things I&apos;ve built
+            {t.projects.heading}
           </h2>
           <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-16">
-            A selection of projects showcasing backend architecture, distributed systems, and LLM integration.
+            {t.projects.subDescription}
           </p>
         </FadeContent>
 
@@ -103,7 +106,7 @@ export default function ProjectsSection() {
                         {project.attribution}
                       </span>
                       <span className="inline-flex items-center gap-1 text-xs text-zinc-600 group-hover:text-violet-400/80 transition-colors ml-auto opacity-0 group-hover:opacity-100">
-                        View project
+                        {t.projects.viewProject}
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                           <path d="M7 17l9.2-9.2M17 17V7H7" />
                         </svg>

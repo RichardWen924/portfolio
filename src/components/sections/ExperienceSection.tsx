@@ -1,36 +1,36 @@
-import FadeContent from './FadeContent'
-
-const experiences = [
-  {
-    role: 'Backend Developer Engineer',
-    company: 'Enterprise Applications',
-    date: '2022 — Present',
-    description:
-      'Designing and developing scalable microservice architectures with Java and Spring Boot. Leading LLM integration initiatives for enterprise applications, building AI-powered Agent systems that transform traditional backend workflows.',
-  },
-  {
-    role: 'Java Backend Developer',
-    company: 'Distributed Systems',
-    date: '2021 — 2022',
-    description:
-      'Built high-throughput data pipelines processing millions of daily events using Kafka and Redis. Implemented rate limiting, circuit breaker patterns, and intelligent routing for API gateway services.',
-  },
-  {
-    role: 'Software Developer',
-    company: 'Full-Stack Development',
-    date: '2020 — 2021',
-    description:
-      'Developed full-stack web applications with Vue.js frontends and Spring Boot backends. Worked with MySQL, PostgreSQL, and MongoDB for data persistence across multiple projects.',
-  },
-]
-
-const education = {
-  school: 'Nanchang University',
-  degree: 'B.E. Software Engineering',
-  date: '2018 — 2022',
-}
+import { useT } from '../../i18n'
+import FadeContent from '../effects/FadeContent'
 
 export default function ExperienceSection() {
+  const t = useT()
+
+  const experiences = [
+    {
+      role: t.experience.exp1.role,
+      company: t.experience.exp1.company,
+      date: t.experience.exp1.date,
+      description: t.experience.exp1.description,
+    },
+    {
+      role: t.experience.exp2.role,
+      company: t.experience.exp2.company,
+      date: t.experience.exp2.date,
+      description: t.experience.exp2.description,
+    },
+    {
+      role: t.experience.exp3.role,
+      company: t.experience.exp3.company,
+      date: t.experience.exp3.date,
+      description: t.experience.exp3.description,
+    },
+  ]
+
+  const education = {
+    school: t.experience.education.school,
+    degree: t.experience.education.degree,
+    date: t.experience.education.date,
+  }
+
   return (
     <section id="experience" className="relative py-24 md:py-32 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
@@ -42,17 +42,17 @@ export default function ExperienceSection() {
               <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
               <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="0.3" opacity="0.2" />
             </svg>
-            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">03 / Experience</span>
+            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">{t.experience.sectionId}</span>
           </div>
         </FadeContent>
 
         {/* Section heading */}
         <FadeContent blur={true} duration={1000}>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
-            Where I&apos;ve worked
+            {t.experience.heading}
           </h2>
           <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-16">
-            Four years of experience building backend systems, from distributed microservices to LLM-powered enterprise applications.
+            {t.experience.subDescription}
           </p>
         </FadeContent>
 

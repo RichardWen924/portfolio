@@ -1,5 +1,6 @@
-import FadeContent from './FadeContent'
-import LogoLoop from './LogoLoop'
+import { useT } from '../../i18n'
+import FadeContent from '../effects/FadeContent'
+import LogoLoop from '../effects/LogoLoop'
 import {
   SiOpenjdk, SiSpringboot, SiPython, SiVuedotjs,
   SiMysql, SiPostgresql, SiMongodb, SiRedis,
@@ -30,14 +31,16 @@ const devopsTech = [
 ]
 
 export default function SkillsSection() {
+  const t = useT()
+
   return (
     <section id="skills" className="relative py-24 md:py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <FadeContent blur={true} duration={1000}>
           <div className="text-center mb-16">
-            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">SKILLS</p>
+            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">{t.skills.label}</p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              Technologies I Work With
+              {t.skills.heading}
             </h2>
           </div>
         </FadeContent>
@@ -46,7 +49,7 @@ export default function SkillsSection() {
         <FadeContent blur={true} duration={1000} delay={200}>
           <div className="mb-6">
             <p className="text-zinc-500 text-xs font-medium tracking-wider mb-4 text-center">
-              BACKEND & DATABASES
+              {t.skills.category1}
             </p>
             <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl py-6">
               <LogoLoop
@@ -59,7 +62,7 @@ export default function SkillsSection() {
                 fadeOut
                 fadeOutColor="#09090b"
                 scaleOnHover
-                ariaLabel="Backend and database technologies"
+                ariaLabel={t.skills.ariaLabel1}
               />
             </div>
           </div>
@@ -69,7 +72,7 @@ export default function SkillsSection() {
         <FadeContent blur={true} duration={1000} delay={400}>
           <div>
             <p className="text-zinc-500 text-xs font-medium tracking-wider mb-4 text-center">
-              DEVOPS & TOOLS
+              {t.skills.category2}
             </p>
             <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl py-6">
               <LogoLoop
@@ -82,7 +85,7 @@ export default function SkillsSection() {
                 fadeOut
                 fadeOutColor="#09090b"
                 scaleOnHover
-                ariaLabel="DevOps and tooling technologies"
+                ariaLabel={t.skills.ariaLabel2}
               />
             </div>
           </div>

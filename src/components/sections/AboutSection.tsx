@@ -1,22 +1,25 @@
-import FadeContent from './FadeContent'
-import CountUp from './CountUp'
-
-const stats = [
-  { value: 4, label: 'Years Coding', suffix: '+' },
-  { value: 15, label: 'Projects Built', suffix: '+' },
-  { value: 10, label: 'Technologies', suffix: '+' },
-]
+import { useT } from '../../i18n'
+import CountUp from '../effects/CountUp'
+import FadeContent from '../effects/FadeContent'
 
 export default function AboutSection() {
+  const t = useT()
+
+  const stats = [
+    { value: 4, label: t.about.statYears, suffix: '+' },
+    { value: 15, label: t.about.statProjects, suffix: '+' },
+    { value: 10, label: t.about.statTech, suffix: '+' },
+  ]
+
   return (
     <section id="about" className="relative py-24 md:py-32 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={1000}>
           <div className="text-center mb-16">
-            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">ABOUT</p>
+            <p className="text-violet-400 text-sm font-medium tracking-wider mb-3">{t.about.label}</p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              Crafting Code That Matters
+              {t.about.heading}
             </h2>
           </div>
         </FadeContent>
@@ -26,18 +29,13 @@ export default function AboutSection() {
           <FadeContent blur={true} duration={1000} delay={200}>
             <div className="space-y-4">
               <p className="text-zinc-400 text-lg leading-relaxed">
-                I&apos;m a backend developer passionate about designing scalable, high-performance
-                systems. With deep expertise in Java ecosystem and Spring Boot, I build
-                microservices that power modern enterprise applications.
+                {t.about.bio1}
               </p>
               <p className="text-zinc-400 text-lg leading-relaxed">
-                Currently diving into the world of Large Language Models, exploring how AI agents
-                can transform traditional backend architectures. I believe the future of software
-                lies at the intersection of robust engineering and intelligent automation.
+                {t.about.bio2}
               </p>
               <p className="text-zinc-500 text-base leading-relaxed">
-                Open to discussing microservice architecture, LLM applications, and all things
-                backend. Let&apos;s build something great together.
+                {t.about.bio3}
               </p>
             </div>
           </FadeContent>

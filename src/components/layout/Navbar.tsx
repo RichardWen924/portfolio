@@ -1,24 +1,29 @@
-import { useState, useEffect } from 'react'
-import CountUp from './CountUp'
-import { useVisitorCount } from '../hooks/useVisitorCount'
+import { useState, useEffect, useContext } from 'react'
+import CountUp from '../effects/CountUp'
+import { useVisitorCount } from '../../hooks/useVisitorCount'
+import { useT, LanguageContext } from '../../i18n'
 
-const navItems = [
-  { label: 'About', href: '#about' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
-]
+const navHrefs = ['#about', '#experience', '#skills', '#projects', '#contact']
 
 export default function Navbar() {
+  const t = useT()
+  const { lang, toggleLang } = useContext(LanguageContext)
   const [active, setActive] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const visitorCount = useVisitorCount()
 
+  const navItems = [
+    { label: t.nav.about, href: navHrefs[0] },
+    { label: t.nav.experience, href: navHrefs[1] },
+    { label: t.nav.skills, href: navHrefs[2] },
+    { label: t.nav.projects, href: navHrefs[3] },
+    { label: t.nav.contact, href: navHrefs[4] },
+  ]
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
-      const sections = navItems.map(item => document.querySelector(item.href))
+      const sections = navHrefs.map(href => document.querySelector(href))
       const scrollPos = window.scrollY + 100
       sections.forEach((section, i) => {
         if (section) {
@@ -32,7 +37,7 @@ export default function Navbar() {
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [navItems])
 
   return (
     <nav
@@ -77,18 +82,27 @@ export default function Navbar() {
             separator=","
             className="font-mono text-xs text-zinc-600 tabular-nums"
           />
+
+          {/* Language toggle */}
+          <span className="text-zinc-700 select-none">&middot;</span>
+          <button
+            onClick={toggleLang}
+            className="font-mono text-xs text-zinc-500 hover:text-violet-400 transition-colors"
+          >
+            {lang === 'en' ? '中文' : 'EN'}
+          </button>
         </div>
 
         {/* Mobile menu */}
         <div className="md:hidden">
-          <MobileMenu active={active} />
+          <MobileMenu active={active} navItems={navItems} t={t} />
         </div>
       </div>
     </nav>
   )
 }
 
-function MobileMenu({ active }: { active: string }) {
+function MobileMenu({ active, navItems, t }: { active: string; navItems: { label: string; href: string }[]; t: ReturnType<typeof useT> }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -96,7 +110,7 @@ function MobileMenu({ active }: { active: string }) {
       <button
         onClick={() => setOpen(!open)}
         className="p-2 text-zinc-400 hover:text-white"
-        aria-label="Toggle menu"
+        aria-label={t.nav.toggleMenu}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           {open ? (
