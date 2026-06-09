@@ -47,7 +47,7 @@ export default function Navbar() {
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-6xl mx-auto px-6 sm:px-16 h-16 flex items-center justify-between">
+        <div className="h-16 flex items-center pl-6 sm:pl-16 pr-4 sm:pr-8">
           {/* Logo */}
           <a
             href="#home"
@@ -56,8 +56,8 @@ export default function Navbar() {
             Richardzzz
           </a>
 
-          {/* Nav links - minimal text style */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Nav links - pushed to viewport right edge */}
+          <div className="hidden md:flex items-center gap-8 ml-auto">
             {navItems.map(item => (
               <a
                 key={item.label}
@@ -83,14 +83,14 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu */}
-          <div className="md:hidden">
+          <div className="md:hidden ml-auto">
             <MobileMenu active={active} navItems={navItems} t={t} />
           </div>
         </div>
       </nav>
 
       {/* Visitor badge - top-right below navbar */}
-      <div className="fixed top-20 right-6 sm:right-16 z-40 flex items-center gap-1.5 pointer-events-none select-none">
+      <div className="fixed top-20 right-4 sm:right-8 z-40 flex items-center gap-1.5 pointer-events-none select-none">
         <span className="font-mono text-xs tabular-nums text-zinc-500">
           {visitorCount.toLocaleString()}
         </span>

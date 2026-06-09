@@ -53,8 +53,8 @@ export default function HeroSection() {
         {/* ASCII Text */}
         <div className="relative w-full max-w-2xl h-72 sm:h-80 md:h-96">
           <ASCIIText
-            text="Hello!"
-            asciiFontSize={8}
+            text="HELLO"
+            asciiFontSize={10}
             textFontSize={200}
             textColor="#fdf9f3"
             planeBaseHeight={10}
