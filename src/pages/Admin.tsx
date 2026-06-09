@@ -105,6 +105,7 @@ export default function Admin() {
   const [toast, setToast] = useState('')
 
   const showToast = useCallback((msg: string) => {
+    triggerSync()
     setToast(msg)
     setTimeout(() => setToast(''), 2000)
   }, [])
