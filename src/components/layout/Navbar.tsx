@@ -95,7 +95,7 @@ export default function Navbar() {
         <span className="font-mono text-xs tabular-nums text-zinc-500">
           {visitorCount.toLocaleString()}
         </span>
-        <span className="text-[10px] text-zinc-600 uppercase tracking-wider">viewers</span>
+        <span className="text-[10px] text-zinc-600 uppercase tracking-wider">visitor</span>
       </div>
     </>
   )
