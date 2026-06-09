@@ -1,47 +1,91 @@
 [
   {
     "id": "svc-1",
-    "title": { "en": "Microservice Architecture", "zh": "微服务架构" },
+    "title": {
+      "en": "Microservice Architecture",
+      "zh": "微服务架构"
+    },
     "description": {
       "en": "Design and build distributed backend systems with Spring Cloud, service discovery, circuit breakers, and event-driven communication. Scalable, resilient, and ready for production traffic.",
       "zh": "使用 Spring Cloud、服务发现、熔断器和事件驱动通信设计和构建分布式后端系统。可扩展、高可用，准备好承载生产流量。"
     },
-    "tags": ["Spring Boot", "Spring Cloud", "Kafka", "RabbitMQ", "Docker"]
+    "tags": [
+      "Spring Boot",
+      "Spring Cloud",
+      "Kafka",
+      "RabbitMQ",
+      "Docker"
+    ]
   },
   {
     "id": "svc-2",
-    "title": { "en": "LLM & AI Integration", "zh": "LLM & AI 集成" },
+    "title": {
+      "en": "LLM & AI Integration",
+      "zh": "LLM & AI 集成"
+    },
     "description": {
       "en": "Integrate Large Language Models into enterprise applications. Build AI-powered Agent systems, RAG pipelines, and intelligent automation workflows that transform traditional backend processes.",
       "zh": "将大语言模型集成到企业应用中。构建 AI 驱动的 Agent 系统、RAG 管道和智能自动化工作流，转型传统后端流程。"
     },
-    "tags": ["LLM", "Agent", "RAG", "Ollama", "Python"]
+    "tags": [
+      "LLM",
+      "Agent",
+      "RAG",
+      "Ollama",
+      "Python"
+    ]
   },
   {
     "id": "svc-3",
-    "title": { "en": "API Development", "zh": "API 开发" },
+    "title": {
+      "en": "API Development",
+      "zh": "API 开发"
+    },
     "description": {
       "en": "Design RESTful APIs and high-performance gateways with intelligent routing, rate limiting, and authentication. Clean, documented, and built for developer experience.",
       "zh": "设计 RESTful API 和高性能网关，具备智能路由、限流和身份验证功能。干净、文档完善，为开发者体验而建。"
     },
-    "tags": ["REST", "API Gateway", "Nginx", "Redis", "OAuth2"]
+    "tags": [
+      "REST",
+      "API Gateway",
+      "Nginx",
+      "Redis",
+      "OAuth2"
+    ]
   },
   {
     "id": "svc-4",
-    "title": { "en": "Database Design", "zh": "数据库设计" },
+    "title": {
+      "en": "Database Design",
+      "zh": "数据库设计"
+    },
     "description": {
       "en": "Architect data models across relational and NoSQL databases. Handle complex queries, indexing strategies, and data migration for MySQL, PostgreSQL, and MongoDB.",
       "zh": "跨关系型和 NoSQL 数据库设计数据模型。处理 MySQL、PostgreSQL 和 MongoDB 的复杂查询、索引策略和数据迁移。"
     },
-    "tags": ["MySQL", "PostgreSQL", "MongoDB", "Redis"]
+    "tags": [
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB",
+      "Redis"
+    ]
   },
   {
     "id": "svc-5",
-    "title": { "en": "DevOps & Deployment", "zh": "DevOps & 部署" },
+    "title": {
+      "en": "DevOps & Deployment",
+      "zh": "DevOps & 部署"
+    },
     "description": {
       "en": "Containerized deployments with Docker, CI/CD pipeline configuration, monitoring with Kibana, and cloud infrastructure management. Smooth shipping from dev to production.",
       "zh": "使用 Docker 容器化部署、CI/CD 管道配置、Kibana 监控和云基础设施管理。从开发到生产平滑过渡。"
     },
-    "tags": ["Docker", "Nginx", "Git", "Kibana", "CI/CD"]
+    "tags": [
+      "Docker",
+      "Nginx",
+      "Git",
+      "Kibana",
+      "CI/CD"
+    ]
   }
 ]

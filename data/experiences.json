@@ -1,8 +1,14 @@
 [
   {
     "id": "exp-1",
-    "role": { "en": "Backend Developer Engineer", "zh": "后端开发工程师" },
-    "company": { "en": "Enterprise Applications", "zh": "企业应用" },
+    "role": {
+      "en": "Backend Developer Engineer",
+      "zh": "后端开发工程师"
+    },
+    "company": {
+      "en": "Enterprise Applications",
+      "zh": "企业应用"
+    },
     "startDate": "2022.7",
     "endDate": null,
     "description": {
@@ -12,8 +18,14 @@
   },
   {
     "id": "exp-2",
-    "role": { "en": "Java Backend Developer", "zh": "Java 后端开发者" },
-    "company": { "en": "Distributed Systems", "zh": "分布式系统" },
+    "role": {
+      "en": "Java Backend Developer",
+      "zh": "Java 后端开发者"
+    },
+    "company": {
+      "en": "Distributed Systems",
+      "zh": "分布式系统"
+    },
     "startDate": "2021.3",
     "endDate": "2022.6",
     "description": {
@@ -23,8 +35,14 @@
   },
   {
     "id": "exp-3",
-    "role": { "en": "Software Developer", "zh": "软件开发者" },
-    "company": { "en": "Full-Stack Development", "zh": "全栈开发" },
+    "role": {
+      "en": "Software Developer",
+      "zh": "软件开发者"
+    },
+    "company": {
+      "en": "Full-Stack Development",
+      "zh": "全栈开发"
+    },
     "startDate": "2020.8",
     "endDate": "2021.2",
     "description": {
