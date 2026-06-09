@@ -102,6 +102,12 @@ export default function Admin() {
   const [token, setToken] = useState(() => sessionStorage.getItem('gh-token') || '')
   const [publishing, setPublishing] = useState(false)
   const [publishMsg, setPublishMsg] = useState('')
+  const [toast, setToast] = useState('')
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg)
+    setTimeout(() => setToast(''), 2000)
+  }, [])
 
   useEffect(() => saveData(data), [data])
 
@@ -318,6 +324,7 @@ export default function Admin() {
             data={data.about}
             onSave={(about) => {
               setData(prev => ({ ...prev, about }))
+              showToast('About saved successfully')
             }}
           />
         )}
@@ -328,6 +335,7 @@ export default function Admin() {
             data={data.servicesContent}
             onSave={(sc) => {
               setData(prev => ({ ...prev, servicesContent: sc }))
+              showToast('Services header saved successfully')
             }}
           />
         )}
@@ -364,6 +372,13 @@ export default function Admin() {
         )}
       </div>
 
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-emerald-500/90 text-white text-sm font-medium rounded-lg shadow-lg animate-pulse">
+          {toast}
+        </div>
+      )}
+
       {/* Modal */}
       {(editing || adding) && (
         <EditModal
@@ -381,6 +396,7 @@ export default function Admin() {
             })
             setEditing(null)
             setAdding(false)
+            showToast(adding ? 'Item created successfully' : 'Item saved successfully')
           }}
           onClose={() => { setEditing(null); setAdding(false) }}
         />
