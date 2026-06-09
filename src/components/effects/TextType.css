@@ -1,0 +1,7 @@
+.text-type__cursor {
+  font-weight: 100;
+}
+
+.text-type__cursor--hidden {
+  visibility: hidden;
+}

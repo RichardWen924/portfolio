@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { LanguageContext, useT } from '../../i18n'
 import type { Project } from '../../data/types'
+import TextType from '../effects/TextType'
 
 interface ProjectDetailProps {
   project: Project
@@ -122,6 +123,35 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
                 <p key={i} className="text-zinc-400 text-base leading-relaxed">
                   {para}
                 </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Highlights section */}
+        <div className="border-t border-white/[0.06]">
+          <div className="max-w-4xl mx-auto px-6 sm:px-16 py-24 md:py-32">
+            <p className="font-mono text-xs uppercase tracking-widest text-violet-400/60 mb-16">
+              {lang === 'zh' ? '优化亮点' : 'Highlights'}
+            </p>
+            <div className="space-y-12">
+              {project.highlights[lang].map((highlight, i) => (
+                <div key={i} className="flex items-start gap-6">
+                  <span className="font-mono text-xs text-zinc-700 tabular-nums pt-1 flex-shrink-0">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <TextType
+                    text={highlight}
+                    as="p"
+                    typingSpeed={40}
+                    initialDelay={i * 200}
+                    pauseDuration={999999}
+                    loop={false}
+                    showCursor={false}
+                    startOnVisible={true}
+                    className="text-lg md:text-xl text-zinc-300 font-medium leading-relaxed"
+                  />
+                </div>
               ))}
             </div>
           </div>

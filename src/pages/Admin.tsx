@@ -247,7 +247,7 @@ function EditModal({
       return { id, school: { en: '', zh: '' }, degree: { en: '', zh: '' }, date: { en: '', zh: '' } } as Education
     }
     if (type === 'projects') {
-      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, longDescription: { en: '', zh: '' }, role: { en: '', zh: '' }, client: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], href: '' } as Project
+      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, longDescription: { en: '', zh: '' }, role: { en: '', zh: '' }, client: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], highlights: { en: [] as string[], zh: [] as string[] }, href: '' } as Project
     }
     return { id, title: { en: '', zh: '' }, description: { en: '', zh: '' }, tags: [] as string[] } as Service
   })
@@ -281,6 +281,15 @@ function EditModal({
 
   const updateTags = (value: string) => {
     setForm(prev => ({ ...prev, tags: value.split(',').map(s => s.trim()).filter(Boolean) } as typeof prev))
+  }
+
+  const updateHighlights = (lang: 'en' | 'zh', value: string) => {
+    setForm(prev => {
+      const next = structuredClone(prev)
+      const lines = value.split('\n').map(s => s.trim()).filter(Boolean)
+      ;(next as Project).highlights = { ...(next as Project).highlights, [lang]: lines }
+      return next
+    })
   }
 
   const isBilingual = (field: string) => {
@@ -322,6 +331,34 @@ function EditModal({
                     onChange={e => updateString('href', e.target.value)}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
                   />
+                </div>
+              )
+            }
+            if (field === 'highlights') {
+              const hl = (form as Project).highlights || { en: [], zh: [] }
+              return (
+                <div key={field}>
+                  <label className="block text-xs text-zinc-500 mb-1 font-mono">highlights (one per line)</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[10px] text-zinc-600">EN</span>
+                      <textarea
+                        value={hl.en.join('\n')}
+                        onChange={e => updateHighlights('en', e.target.value)}
+                        rows={4}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-zinc-600">ZH</span>
+                      <textarea
+                        value={hl.zh.join('\n')}
+                        onChange={e => updateHighlights('zh', e.target.value)}
+                        rows={4}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors resize-y"
+                      />
+                    </div>
+                  </div>
                 </div>
               )
             }
@@ -412,7 +449,7 @@ function getFields(type: Tab): string[] {
     case 'educations':
       return ['school', 'degree', 'date']
     case 'projects':
-      return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'tags', 'href']
+      return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'highlights', 'tags', 'href']
     case 'services':
       return ['title', 'description', 'tags']
   }

@@ -23,6 +23,7 @@ export interface Project {
   client: { en: string; zh: string };
   attribution: { en: string; zh: string };
   tags: string[];
+  highlights: { en: string[]; zh: string[] };
   href: string;
 }
 
