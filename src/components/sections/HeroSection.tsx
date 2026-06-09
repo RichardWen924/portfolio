@@ -92,10 +92,28 @@ export default function HeroSection() {
 
         {/* Meta info */}
         <FadeContent blur={true} duration={800} delay={1000}>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-8 text-sm text-zinc-500">
-            <span className="font-mono text-xs uppercase tracking-wider">{t.hero.metaRole}</span>
-            <span className="text-zinc-700">&middot;</span>
-            <span>{t.hero.metaLocation}</span>
+          <div className="flex flex-col items-center gap-4 mt-8">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-500">
+              <span className="font-mono text-xs uppercase tracking-wider">{t.hero.metaRole}</span>
+              <span className="text-zinc-700">&middot;</span>
+              <span>{t.hero.metaLocation}</span>
+            </div>
+            {/* Scroll-down arrow */}
+            <div className="flex flex-col items-center gap-1 text-violet-400/60 animate-bounce">
+              <span className="font-mono text-[10px] uppercase tracking-widest">Scroll</span>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              </svg>
+            </div>
           </div>
         </FadeContent>
       </div>
