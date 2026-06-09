@@ -7,27 +7,32 @@ interface ExperienceTimelineProps {
   experiences: Experience[]
 }
 
-const ZH_MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-const EN_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-
-function formatDate(dateStr: string, lang: 'en' | 'zh'): string {
-  const [year, month] = dateStr.split('-')
-  const months = lang === 'zh' ? ZH_MONTHS : EN_MONTHS
-  const m = months[parseInt(month, 10) - 1]
-  return lang === 'zh' ? `${year}年${m}` : `${m} ${year}`
+function parseDate(dateStr: string): [number, number] {
+  const [year, month] = dateStr.split(/[.-]/)
+  return [parseInt(year, 10), parseInt(month, 10)]
 }
 
-function formatRange(start: string, end: string | null, lang: 'en' | 'zh'): string {
-  const startFormatted = formatDate(start, lang)
-  const endFormatted = end ? formatDate(end, lang) : (lang === 'zh' ? '至今' : 'Present')
+function formatDate(dateStr: string): string {
+  const [y, m] = parseDate(dateStr)
+  return `${y}.${m}`
+}
+
+function formatRange(start: string, end: string | null): string {
+  const startFormatted = formatDate(start)
+  const endFormatted = end ? formatDate(end) : 'Present'
   return `${startFormatted} \u2014 ${endFormatted}`
+}
+
+function toSortKey(dateStr: string): number {
+  const [y, m] = parseDate(dateStr)
+  return y * 100 + m
 }
 
 export default function ExperienceTimeline({ experiences }: ExperienceTimelineProps) {
   const { lang } = useContext(LanguageContext)
 
   const sorted = useMemo(() => {
-    return [...experiences].sort((a, b) => b.startDate.localeCompare(a.startDate))
+    return [...experiences].sort((a, b) => toSortKey(b.startDate) - toSortKey(a.startDate))
   }, [experiences])
 
   return (
@@ -39,15 +44,15 @@ export default function ExperienceTimeline({ experiences }: ExperienceTimelinePr
             <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-800 bg-violet-400/60 group-hover:bg-violet-400 group-hover:shadow-[0_0_12px_rgba(167,139,250,0.4)] transition-all duration-300" />
 
             {/* 左侧日期 */}
-            <span className="absolute -left-28 sm:-left-36 top-0 text-xs font-mono text-zinc-600 tracking-wide whitespace-nowrap hidden sm:block">
-              {formatRange(exp.startDate, exp.endDate, lang)}
+            <span className="absolute -left-28 sm:-left-36 top-1.5 text-xs font-mono text-zinc-600 tracking-wide whitespace-nowrap hidden sm:block">
+              {formatRange(exp.startDate, exp.endDate)}
             </span>
 
             {/* 内容 */}
             <div>
               {/* 日期（移动端） */}
               <span className="block sm:hidden text-xs font-mono text-zinc-600 tracking-wide mb-2">
-                {formatRange(exp.startDate, exp.endDate, lang)}
+                {formatRange(exp.startDate, exp.endDate)}
               </span>
 
               {/* 职位 */}

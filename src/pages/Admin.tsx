@@ -22,9 +22,20 @@ function isValidExperienceItem(item: unknown): item is Experience {
   return typeof e.id === 'string' && typeof e.startDate === 'string' && (e.endDate === null || typeof e.endDate === 'string')
 }
 
+function normalizeDate(dateStr: string): string {
+  // Convert 'YYYY-MM' to 'YYYY.M'
+  const parts = dateStr.split(/[.-]/)
+  return `${parts[0]}.${parseInt(parts[1], 10)}`
+}
+
 function migrateData(raw: StoredData): StoredData {
-  const exps = raw.experiences
-  if (Array.isArray(exps) && !exps.every(isValidExperienceItem)) {
+  if (Array.isArray(raw.experiences)) {
+    raw.experiences = raw.experiences.filter(isValidExperienceItem).map(exp => ({
+      ...exp,
+      startDate: normalizeDate(exp.startDate),
+      endDate: exp.endDate ? normalizeDate(exp.endDate) : null,
+    }))
+  } else {
     raw.experiences = defaultExperiences
   }
   if (!Array.isArray(raw.educations)) raw.educations = defaultEducations
@@ -492,7 +503,7 @@ function EditModal({
               return (
                 <div key={field}>
                   <label className="block text-xs text-zinc-500 mb-1 font-mono">
-                    {field} {field === 'endDate' ? '(empty = Present)' : '(YYYY-MM)'}
+                    {field} {field === 'endDate' ? '(empty = Present)' : '(YYYY.M)'}
                   </label>
                   <input
                     value={String(val)}
@@ -502,7 +513,7 @@ function EditModal({
                       ;(next as unknown as Record<string, unknown>)[field] = field === 'endDate' ? (v || null) : v
                       return next
                     })}
-                    placeholder={field === 'startDate' ? '2022-07' : '2025-06'}
+                    placeholder={field === 'startDate' ? '2022.7' : '2025.6'}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors font-mono"
                   />
                 </div>
