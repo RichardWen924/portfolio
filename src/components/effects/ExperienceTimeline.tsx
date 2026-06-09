@@ -32,7 +32,7 @@ export default function ExperienceTimeline({ experiences }: ExperienceTimelinePr
   const { lang } = useContext(LanguageContext)
 
   const sorted = useMemo(() => {
-    return [...experiences].sort((a, b) => toSortKey(b.startDate) - toSortKey(a.startDate))
+    return [...experiences].sort((a, b) => toSortKey(a.startDate) - toSortKey(b.startDate))
   }, [experiences])
 
   return (
