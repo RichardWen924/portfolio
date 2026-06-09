@@ -1,13 +1,13 @@
 import { useT } from '../../i18n'
-import BlurText from '../effects/BlurText'
 import FadeContent from '../effects/FadeContent'
 import DotGrid from '../effects/DotGrid'
+import ASCIIText from '../effects/ASCIIText'
 
 export default function HeroSection() {
   const t = useT()
 
   return (
-    <section id="home" className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+    <section id="home" className="relative min-h-screen flex flex-col overflow-hidden">
       {/* DotGrid background - interactive dots, only visible in hero */}
       <div className="absolute inset-0">
         <DotGrid
@@ -26,11 +26,10 @@ export default function HeroSection() {
 
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/30 via-zinc-950/60 to-zinc-950 pointer-events-none" />
 
-      {/* Content - left aligned, generous spacing */}
-      <div className="relative z-10 px-6 sm:px-16 max-w-4xl">
-        {/* Status badge */}
-        <FadeContent blur={true} duration={800} delay={200}>
-          <div className="flex items-center gap-3 mb-12">
+      {/* Status badge - top left, below navbar */}
+      <div className="absolute top-24 left-6 sm:left-16 z-10">
+        <FadeContent blur={true} duration={800}>
+          <div className="flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
@@ -40,47 +39,39 @@ export default function HeroSection() {
             </span>
           </div>
         </FadeContent>
+      </div>
 
-        {/* Tagline */}
-        <FadeContent blur={true} duration={800} delay={400}>
-          <p className="font-mono text-xs uppercase tracking-widest text-violet-400/80 mb-8">
+      {/* Center content */}
+      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 sm:px-16">
+        {/* Tagline above ASCII */}
+        <FadeContent blur={true} duration={800} delay={200}>
+          <p className="font-mono text-xs uppercase tracking-widest text-violet-400/80 mb-6">
             {t.hero.tagline}
           </p>
         </FadeContent>
 
-        {/* Large name */}
-        <div className="mb-6">
-          <BlurText
-            text="Richardzzz"
-            delay={150}
-            animateBy="letters"
-            direction="top"
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[0.9]"
+        {/* ASCII Text */}
+        <div className="relative w-full max-w-2xl h-72 sm:h-80 md:h-96">
+          <ASCIIText
+            text="Hello!"
+            asciiFontSize={8}
+            textFontSize={200}
+            textColor="#fdf9f3"
+            planeBaseHeight={10}
+            enableWaves={false}
           />
         </div>
 
-        {/* Description with highlighted phrases */}
-        <FadeContent blur={true} duration={1000} delay={1000}>
-          <p className="text-lg sm:text-xl md:text-2xl text-zinc-400 max-w-2xl leading-relaxed">
-            {t.hero.description1}
-            <span className="text-violet-400/80">{t.hero.description2}</span>
-            <span className="text-white">{t.hero.description3}</span>
-            <span className="text-zinc-500">{t.hero.description4}</span>
+        {/* Welcome text */}
+        <FadeContent blur={true} duration={1000} delay={400}>
+          <p className="text-lg sm:text-xl md:text-2xl text-zinc-400 font-medium mt-6">
+            Welcome to Richard's Portfolio!
           </p>
         </FadeContent>
 
-        {/* Meta info */}
-        <FadeContent blur={true} duration={800} delay={1400}>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 text-sm text-zinc-500">
-            <span className="font-mono text-xs uppercase tracking-wider">{t.hero.metaRole}</span>
-            <span className="text-zinc-700">&middot;</span>
-            <span>{t.hero.metaLocation}</span>
-          </div>
-        </FadeContent>
-
-        {/* CTAs */}
-        <FadeContent blur={true} duration={800} delay={1800}>
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+        {/* CTAs below welcome */}
+        <FadeContent blur={true} duration={800} delay={800}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <a
               href="mailto:Wen314016548@163.com"
               className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-zinc-900 rounded-full font-medium text-sm transition-all duration-300 hover:bg-violet-200 hover:gap-3"
@@ -96,6 +87,15 @@ export default function HeroSection() {
             >
               {t.hero.ctaSecondary}
             </a>
+          </div>
+        </FadeContent>
+
+        {/* Meta info */}
+        <FadeContent blur={true} duration={800} delay={1000}>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-8 text-sm text-zinc-500">
+            <span className="font-mono text-xs uppercase tracking-wider">{t.hero.metaRole}</span>
+            <span className="text-zinc-700">&middot;</span>
+            <span>{t.hero.metaLocation}</span>
           </div>
         </FadeContent>
       </div>
