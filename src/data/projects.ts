@@ -36,6 +36,7 @@ export const projects: Project[] = [
       en: ['Multi-provider LLM adapter with plugin architecture', 'Visual agent builder with drag-and-drop workflow', 'Real-time monitoring with Kafka event streaming', 'Redis-powered distributed state management'],
       zh: ['插件式多 LLM 提供商适配器', '可视化拖拽 Agent 构建器', 'Kafka 事件流实时监控', 'Redis 分布式状态管理'],
     },
+    images: [],
     href: 'https://github.com/RichardWen924',
   },
   {
@@ -73,6 +74,7 @@ export const projects: Project[] = [
       en: ['Non-blocking I/O with Netty for 10K+ RPS', 'Dynamic route configuration and hot reload', 'Adaptive rate limiting based on traffic patterns', 'Circuit breaker with graceful degradation'],
       zh: ['Netty 非阻塞 I/O 支持万级 QPS', '动态路由配置与热加载', '基于流量模式的自适应限流', '熔断器优雅降级'],
     },
+    images: [],
     href: 'https://github.com/RichardWen924',
   },
   {
@@ -110,6 +112,7 @@ export const projects: Project[] = [
       en: ['Exactly-once processing with idempotent writes', 'Multi-source ingestion from Kafka topics', 'Configurable transformation processor chain', 'Fault-tolerant with checkpoint recovery and DLQ'],
       zh: ['幂等写入精确一次处理语义', '多数据源 Kafka 主题摄取', '可配置转换处理器链', '检查点恢复与死信队列容错'],
     },
+    images: [],
     href: 'https://github.com/RichardWen924',
   },
 ];

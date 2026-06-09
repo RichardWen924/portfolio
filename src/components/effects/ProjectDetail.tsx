@@ -73,7 +73,8 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
     rafId.current = requestAnimationFrame(lerpScroll)
   }
 
-  const paragraphs = project.longDescription[lang].split('\n\n')
+  const paragraphs = project.longDescription?.[lang]?.split('\n\n') ?? []
+  const images = project.images || []
 
   return (
     <div ref={scrollContainerRef} className="fixed inset-0 z-40 bg-zinc-950 overflow-y-auto">
@@ -87,32 +88,44 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
           <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col gap-4 p-4 lg:p-6">
             {/* Top image */}
             <div className="h-[55%] flex-shrink-0 rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-              <div className="w-full h-full bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-zinc-900 flex items-center justify-center">
-                <div className="relative w-full h-full flex items-center justify-center opacity-15">
-                  <div className="w-48 h-48 rounded-full border border-white/20" />
-                  <div className="absolute w-36 h-36 rounded-full border border-white/10 rotate-45" />
-                  <div className="absolute w-24 h-24 rounded-full bg-violet-500/30 blur-3xl" />
+              {images[0] ? (
+                <img src={images[0]} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-zinc-900 flex items-center justify-center">
+                  <div className="relative w-full h-full flex items-center justify-center opacity-15">
+                    <div className="w-48 h-48 rounded-full border border-white/20" />
+                    <div className="absolute w-36 h-36 rounded-full border border-white/10 rotate-45" />
+                    <div className="absolute w-24 h-24 rounded-full bg-violet-500/30 blur-3xl" />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Bottom two images - equal size, side by side */}
             <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
               <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-                <div className="w-full h-full bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-zinc-900 flex items-center justify-center">
-                  <div className="opacity-15">
-                    <div className="w-20 h-20 rounded-full border border-white/20" />
-                    <div className="absolute w-14 h-14 rounded-full bg-emerald-500/20 blur-2xl" />
+                {images[1] ? (
+                  <img src={images[1]} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-zinc-900 flex items-center justify-center">
+                    <div className="opacity-15">
+                      <div className="w-20 h-20 rounded-full border border-white/20" />
+                      <div className="absolute w-14 h-14 rounded-full bg-emerald-500/20 blur-2xl" />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <div className="rounded-xl overflow-hidden bg-zinc-900 border border-white/[0.05]">
-                <div className="w-full h-full bg-gradient-to-br from-amber-600/20 via-orange-600/10 to-zinc-900 flex items-center justify-center">
-                  <div className="opacity-15">
-                    <div className="w-20 h-20 rounded-full border border-white/20" />
-                    <div className="absolute w-14 h-14 rounded-full bg-amber-500/20 blur-2xl" />
+                {images[2] ? (
+                  <img src={images[2]} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-amber-600/20 via-orange-600/10 to-zinc-900 flex items-center justify-center">
+                    <div className="opacity-15">
+                      <div className="w-20 h-20 rounded-full border border-white/20" />
+                      <div className="absolute w-14 h-14 rounded-full bg-amber-500/20 blur-2xl" />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -153,13 +166,13 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
                 <span className="block text-xs text-zinc-600 font-mono uppercase tracking-wider mb-1">
                   {t.projects.roleLabel}
                 </span>
-                <span className="text-sm text-zinc-300">{project.role[lang]}</span>
+                <span className="text-sm text-zinc-300">{project.role?.[lang]}</span>
               </div>
               <div>
                 <span className="block text-xs text-zinc-600 font-mono uppercase tracking-wider mb-1">
                   {t.projects.clientLabel}
                 </span>
-                <span className="text-sm text-zinc-300">{project.client[lang]}</span>
+                <span className="text-sm text-zinc-300">{project.client?.[lang]}</span>
               </div>
             </div>
 
@@ -207,7 +220,7 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
               {lang === 'zh' ? '优化亮点' : 'Highlights'}
             </p>
             <div className="space-y-12">
-              {project.highlights[lang].map((highlight, i) => (
+              {project.highlights?.[lang]?.map((highlight, i) => (
                 <div key={i} className="flex items-start gap-6">
                   <span className="font-mono text-xs text-zinc-700 tabular-nums pt-1 flex-shrink-0">
                     {String(i + 1).padStart(2, '0')}

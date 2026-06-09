@@ -25,6 +25,7 @@ export interface Project {
   attribution: { en: string; zh: string };
   tags: string[];
   highlights: { en: string[]; zh: string[] };
+  images: string[];
   href: string;
 }
 

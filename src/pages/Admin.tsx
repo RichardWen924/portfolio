@@ -22,6 +22,12 @@ function isValidExperienceItem(item: unknown): item is Experience {
   return typeof e.id === 'string' && typeof e.startDate === 'string' && (e.endDate === null || typeof e.endDate === 'string')
 }
 
+function isValidProjectItem(item: unknown): item is Project {
+  if (!item || typeof item !== 'object') return false
+  const e = item as Record<string, unknown>
+  return typeof e.id === 'string' && 'highlights' in e && 'longDescription' in e && 'role' in e && 'client' in e
+}
+
 function normalizeDate(dateStr: string): string {
   // Convert 'YYYY-MM' to 'YYYY.M'
   const parts = dateStr.split(/[.-]/)
@@ -39,7 +45,11 @@ function migrateData(raw: StoredData): StoredData {
     raw.experiences = defaultExperiences
   }
   if (!Array.isArray(raw.educations)) raw.educations = defaultEducations
-  if (!Array.isArray(raw.projects)) raw.projects = defaultProjects
+  if (Array.isArray(raw.projects) && !raw.projects.every(isValidProjectItem)) {
+    raw.projects = defaultProjects
+  } else if (!Array.isArray(raw.projects)) {
+    raw.projects = defaultProjects
+  }
   if (!Array.isArray(raw.services)) raw.services = defaultServices
   return raw
 }
@@ -396,7 +406,7 @@ function EditModal({
       return { id, school: { en: '', zh: '' }, degree: { en: '', zh: '' }, date: { en: '', zh: '' } } as Education
     }
     if (type === 'projects') {
-      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, longDescription: { en: '', zh: '' }, role: { en: '', zh: '' }, client: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], highlights: { en: [] as string[], zh: [] as string[] }, href: '' } as Project
+      return { id, category: { en: '', zh: '' }, title: { en: '', zh: '' }, description: { en: '', zh: '' }, longDescription: { en: '', zh: '' }, role: { en: '', zh: '' }, client: { en: '', zh: '' }, attribution: { en: '', zh: '' }, tags: [] as string[], highlights: { en: [] as string[], zh: [] as string[] }, images: [] as string[], href: '' } as Project
     }
     return { id, title: { en: '', zh: '' }, description: { en: '', zh: '' }, tags: [] as string[] } as Service
   })
@@ -516,6 +526,86 @@ function EditModal({
                     placeholder={field === 'startDate' ? '2022.7' : '2025.6'}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors font-mono"
                   />
+                </div>
+              )
+            }
+            if (field === 'images') {
+              const imgs = (form as Project).images || []
+              const updateImage = (index: number, value: string) => {
+                setForm(prev => {
+                  const next = structuredClone(prev)
+                  const arr = [...((next as Project).images || [])]
+                  arr[index] = value
+                  ;(next as Project).images = arr
+                  return next
+                })
+              }
+              const addImage = () => {
+                setForm(prev => {
+                  const next = structuredClone(prev)
+                  ;(next as Project).images = [...((next as Project).images || []), '']
+                  return next
+                })
+              }
+              const removeImage = (index: number) => {
+                setForm(prev => {
+                  const next = structuredClone(prev)
+                  ;(next as Project).images = ((next as Project).images || []).filter((_, i) => i !== index)
+                  return next
+                })
+              }
+              const handleFileUpload = (index: number, file: File) => {
+                const reader = new FileReader()
+                reader.onload = () => updateImage(index, reader.result as string)
+                reader.readAsDataURL(file)
+              }
+              return (
+                <div key={field}>
+                  <label className="block text-xs text-zinc-500 mb-2 font-mono">images (URL paste or file upload)</label>
+                  <div className="space-y-2">
+                    {imgs.map((img, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <input
+                              value={img}
+                              onChange={e => updateImage(i, e.target.value)}
+                              placeholder="Paste URL or click upload..."
+                              className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 transition-colors font-mono"
+                            />
+                            <label className="px-2 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-xs text-zinc-400 hover:text-white cursor-pointer transition-colors flex-shrink-0">
+                              Upload
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={e => {
+                                  const file = e.target.files?.[0]
+                                  if (file) handleFileUpload(i, file)
+                                  e.target.value = ''
+                                }}
+                              />
+                            </label>
+                            <button
+                              onClick={() => removeImage(i)}
+                              className="px-2 py-2 text-xs text-red-400/70 hover:text-red-400 hover:bg-red-400/5 rounded transition-colors flex-shrink-0"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </button>
+                          </div>
+                          {img && (
+                            <img src={img} alt="" className="mt-2 h-20 rounded border border-white/[0.05] object-cover" />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      onClick={addImage}
+                      className="px-3 py-1.5 text-xs text-violet-400 hover:text-violet-300 border border-violet-400/20 hover:border-violet-400/40 rounded transition-colors"
+                    >
+                      + Add Image
+                    </button>
+                  </div>
                 </div>
               )
             }
@@ -646,7 +736,7 @@ function getFields(type: Tab): string[] {
     case 'educations':
       return ['school', 'degree', 'date']
     case 'projects':
-      return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'highlights', 'tags', 'href']
+      return ['category', 'title', 'description', 'longDescription', 'role', 'client', 'attribution', 'highlights', 'tags', 'images', 'href']
     case 'services':
       return ['title', 'description', 'tags']
   }

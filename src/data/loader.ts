@@ -12,6 +12,12 @@ function isValidExperience(val: unknown): val is Experience[] {
   return val.every((item) => item && typeof item === 'object' && 'startDate' in item && 'endDate' in item)
 }
 
+function isValidProject(val: unknown): val is Project[] {
+  if (!Array.isArray(val)) return false
+  return val.every((item) => item && typeof item === 'object'
+    && 'highlights' in item && 'longDescription' in item && 'role' in item && 'client' in item)
+}
+
 function readLocalStorage<T>(key: string, fallback: T): T {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -23,6 +29,8 @@ function readLocalStorage<T>(key: string, fallback: T): T {
     if (Array.isArray(fallback) && !Array.isArray(val)) return fallback
     // Validate experiences have required startDate/endDate fields
     if (key === 'experiences' && !isValidExperience(val)) return fallback
+    // Validate projects have required fields (highlights, longDescription, role, client)
+    if (key === 'projects' && !isValidProject(val)) return fallback
     return val
   } catch {
     return fallback
