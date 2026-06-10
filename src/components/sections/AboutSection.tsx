@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { LanguageContext, useT } from '../../i18n'
 import { useAbout } from '../../data/loader'
 import FlipText from '../effects/FlipText'
-import ProfileCard from '../effects/ProfileCard'
+import PixelTransition from '../effects/PixelTransition'
 import CountUp from '../effects/CountUp'
 import FadeContent from '../effects/FadeContent'
 
@@ -85,24 +85,40 @@ export default function AboutSection() {
             </FadeContent>
           </div>
 
-          {/* Right column — Profile Card */}
+          {/* Right column — Pixel Transition Card */}
           <FadeContent blur={true} duration={1000} delay={400}>
             <div className="flex justify-end md:pt-4">
-              <ProfileCard
-                name="Richard Wen"
-                title="Software Engineer"
-                handle="RichardWen924"
-                status="Open to Work"
-                contactText="Contact Me"
-                avatarUrl={about.avatarUrl}
-                showUserInfo={true}
-                enableTilt={true}
-                enableMobileTilt={false}
-                onContactClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                behindGlowColor="rgba(167, 139, 250, 0.5)"
-                behindGlowEnabled
-                innerGradient="linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)"
-                iconUrl={`data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="32" font-weight="700" font-family="monospace" fill="white">&lt;/&gt;</text></svg>')}`}
+              <PixelTransition
+                aspectRatio="139.3%"
+                className="!rounded-[30px]"
+                style={{
+                  width: 'min(calc(80svh * 0.718), calc(540px * 0.718))',
+                }}
+                firstContent={
+                  <div className="w-full h-full bg-zinc-800 relative overflow-hidden">
+                    {about.avatarUrl ? (
+                      <img
+                        className="w-full h-full object-cover"
+                        src={about.avatarUrl}
+                        alt="Richard Wen"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-violet-400/40">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                }
+                secondContent={
+                  <div className="w-full h-full flex items-center justify-center bg-[#222]">
+                    <span className="text-5xl md:text-7xl font-black tracking-widest text-violet-400 select-none">
+                      BOOM
+                    </span>
+                  </div>
+                }
               />
             </div>
           </FadeContent>

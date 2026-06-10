@@ -1,13 +1,23 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+// Inject flipIn keyframes once at module level
+if (typeof document !== 'undefined' && !document.getElementById('fliptext-keyframes')) {
+  const style = document.createElement('style')
+  style.id = 'fliptext-keyframes'
+  style.textContent = `
+    @keyframes flipIn {
+      0% { transform: rotateX(90deg); opacity: 0; }
+      100% { transform: rotateX(0deg); opacity: 1; }
+    }
+  `
+  document.head.appendChild(style)
+}
 
 interface FlipTextProps {
   text: string
-  /** Delay in ms before animation starts */
   delay?: number
-  /** Duration per character in ms */
   charDuration?: number
   className?: string
-  /** Animation trigger: 'mount' or 'view' */
   trigger?: 'mount' | 'view'
 }
 
@@ -67,8 +77,32 @@ function FlipChar({
     active ? targetChar : CHARS[Math.floor(Math.random() * CHARS.length)]
   )
   const [flipping, setFlipping] = useState(false)
-  const flipRef = useRef<number | null>(null)
+  const timerRef = useRef<number | null>(null)
   const hasArrived = useRef(false)
+
+  const startFlipSequence = useCallback((finalChar: string) => {
+    let steps = 0
+    const maxSteps = 8 + Math.floor(Math.random() * 6)
+
+    function tick() {
+      if (steps >= maxSteps) {
+        setCurrentChar(finalChar)
+        setFlipping(false)
+        timerRef.current = null
+        return
+      }
+      setFlipping(true)
+      if (steps < maxSteps - 2) {
+        setCurrentChar(CHARS[Math.floor(Math.random() * CHARS.length)])
+      } else {
+        setCurrentChar(finalChar)
+      }
+      steps++
+      timerRef.current = window.setTimeout(tick, 80 + steps * 20)
+    }
+
+    tick()
+  }, [])
 
   useEffect(() => {
     if (!active) return
@@ -76,40 +110,19 @@ function FlipChar({
 
     const timeout = setTimeout(() => {
       hasArrived.current = true
-      startFlipSequence()
+      startFlipSequence(targetChar)
     }, delay)
 
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, delay])
-
-  function startFlipSequence() {
-    let steps = 0
-    const maxSteps = 8 + Math.floor(Math.random() * 6)
-
-    function tick() {
-      if (steps >= maxSteps) {
-        setCurrentChar(targetChar)
-        setFlipping(false)
-        return
+    return () => {
+      clearTimeout(timeout)
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
       }
-      setFlipping(true)
-      // Pick a random char, but on the last few steps, bias toward revealing
-      if (steps < maxSteps - 2) {
-        setCurrentChar(CHARS[Math.floor(Math.random() * CHARS.length)])
-      } else {
-        setCurrentChar(targetChar)
-      }
-      steps++
-      flipRef.current = window.setTimeout(tick, 80 + steps * 20)
     }
+  }, [active, delay, targetChar, startFlipSequence])
 
-    tick()
-  }
-
-  const isSpace = targetChar === ' '
-
-  if (isSpace) {
+  if (targetChar === ' ') {
     return <span className="inline-block w-[0.3em]">&nbsp;</span>
   }
 
@@ -129,12 +142,6 @@ function FlipChar({
       >
         {currentChar}
       </span>
-      <style>{`
-        @keyframes flipIn {
-          0% { transform: rotateX(90deg); opacity: 0; }
-          100% { transform: rotateX(0deg); opacity: 1; }
-        }
-      `}</style>
     </span>
   )
 }
