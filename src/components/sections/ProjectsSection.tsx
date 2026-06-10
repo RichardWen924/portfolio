@@ -16,7 +16,7 @@ export default function ProjectsSection() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <FadeContent blur={true} duration={800}>
-          <div className="flex items-center gap-4 mb-16">
+          <div className="flex items-center gap-4 mb-8">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-violet-400/60 flex-shrink-0">
               <circle cx="12" cy="12" r="3" fill="currentColor" />
               <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
@@ -28,10 +28,10 @@ export default function ProjectsSection() {
 
         {/* Section heading */}
         <FadeContent blur={true} duration={1000}>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-3">
             {t.projects.heading}
           </h2>
-          <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-16">
+          <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-10">
             {t.projects.subDescription}
           </p>
         </FadeContent>
