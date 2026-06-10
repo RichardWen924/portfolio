@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-16 border-t border-white/[0.04] overflow-hidden"
+      className="snap-section relative min-h-screen flex flex-col items-center justify-center px-6 pt-16 border-t border-white/[0.04] overflow-hidden"
       style={{
         scrollSnapAlign: 'start',
       }}

@@ -9,6 +9,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Scroll-snap: one scroll = one section */
+html.snap-mandatory {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 64px; /* navbar height */
+}
+
+@media (min-width: 640px) {
+  html.snap-mandatory {
+    scroll-padding-top: 72px;
+  }
+}
+
+.snap-section {
+  scroll-snap-align: start;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

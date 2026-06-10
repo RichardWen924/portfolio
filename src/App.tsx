@@ -11,48 +11,14 @@ import ServicesSection from './components/sections/ServicesSection'
 import SkillsSection from './components/sections/SkillsSection'
 import Admin from './pages/Admin'
 
-const SNAP_MARGIN = 150   // only snap when within 150px of a section top
-const SNAP_DELAY = 800    // ms idle before snapping
-const NAV_OFFSET = 80     // navbar + breathing room
-
-function useGentleSnap() {
+function MainSite() {
   useEffect(() => {
-    let idle: ReturnType<typeof setTimeout>
-
-    const onScroll = () => {
-      clearTimeout(idle)
-      idle = setTimeout(() => {
-        const sections = Array.from(document.querySelectorAll('section[id], footer[id]')) as HTMLElement[]
-        const sy = window.scrollY
-        let bestEl: HTMLElement | null = null
-        let bestDist = Infinity
-
-        for (const el of sections) {
-          const top = el.getBoundingClientRect().top + sy
-          const dist = Math.abs(sy - (top - NAV_OFFSET))
-          if (dist < SNAP_MARGIN && dist < bestDist) {
-            bestDist = dist
-            bestEl = el
-          }
-        }
-
-        if (bestEl) {
-          const target = bestEl.getBoundingClientRect().top + sy - NAV_OFFSET
-          window.scrollTo({ top: target, behavior: 'smooth' })
-        }
-      }, SNAP_DELAY)
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true })
+    // Enable CSS scroll-snap on the document
+    document.documentElement.classList.add('snap-mandatory')
     return () => {
-      window.removeEventListener('scroll', onScroll)
-      clearTimeout(idle)
+      document.documentElement.classList.remove('snap-mandatory')
     }
   }, [])
-}
-
-function MainSite() {
-  useGentleSnap()
 
   return (
     <ClickSpark

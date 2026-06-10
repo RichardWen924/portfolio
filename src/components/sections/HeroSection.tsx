@@ -7,7 +7,7 @@ export default function HeroSection() {
   const t = useT()
 
   return (
-    <section id="home" className="relative min-h-screen flex flex-col overflow-hidden">
+    <section id="home" className="snap-section relative min-h-screen flex flex-col overflow-hidden">
       {/* DotGrid background - interactive dots, only visible in hero */}
       <div className="absolute inset-0">
         <DotGrid

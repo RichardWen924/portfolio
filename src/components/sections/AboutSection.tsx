@@ -16,7 +16,7 @@ export default function AboutSection() {
   ]
 
   return (
-    <section id="about" className="relative pt-6 pb-40 md:pt-8 md:pb-48 px-6">
+    <section id="about" className="snap-section relative min-h-screen pt-6 pb-40 md:pt-8 md:pb-48 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={1000}>
