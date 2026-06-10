@@ -16,7 +16,7 @@ export default function AboutSection() {
   ]
 
   return (
-    <section id="about" className="relative pt-16 pb-24 md:pt-20 md:pb-32 px-6">
+    <section id="about" className="relative pt-14 pb-16 md:pt-16 md:pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={1000}>
