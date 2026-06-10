@@ -34,7 +34,7 @@ export default function SkillsSection() {
   const t = useT()
 
   return (
-    <section id="skills" className="relative pt-6 pb-16 md:pt-8 md:pb-20 px-6 overflow-hidden">
+    <section id="skills" className="relative pt-6 pb-40 md:pt-8 md:pb-48 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <FadeContent blur={true} duration={1000}>
           <div className="text-center mb-3">

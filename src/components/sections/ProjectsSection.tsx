@@ -12,7 +12,7 @@ export default function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (
-    <section id="projects" className="relative pt-6 pb-16 md:pt-8 md:pb-20 px-6 sm:px-16">
+    <section id="projects" className="relative pt-6 pb-40 md:pt-8 md:pb-48 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <FadeContent blur={true} duration={800}>
