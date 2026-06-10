@@ -4,61 +4,97 @@ export const services: Service[] = [
   {
     id: 'svc-1',
     title: {
-      en: 'Microservice Architecture',
-      zh: '微服务架构',
+      en: 'Backend Development',
+      zh: '后端开发',
     },
     description: {
-      en: 'Design and build distributed backend systems with Spring Cloud, service discovery, circuit breakers, and event-driven communication. Scalable, resilient, and ready for production traffic.',
-      zh: '使用 Spring Cloud、服务发现、熔断器和事件驱动通信设计和构建分布式后端系统。可扩展、高可用，准备好承载生产流量。',
+      en: 'Building robust microservice architectures with Spring Boot, Spring Cloud, Spring Cloud Alibaba, Spring Cloud Gateway, OpenFeign, MyBatis-Plus, and RESTful APIs.',
+      zh: '使用 Spring Boot、Spring Cloud、Spring Cloud Alibaba、Spring Cloud Gateway、OpenFeign、MyBatis-Plus 构建健壮的微服务架构和 RESTful API。',
     },
-    tags: ['Spring Boot', 'Spring Cloud', 'Kafka', 'RabbitMQ', 'Docker'],
+    tags: ['Spring Boot', 'Spring Cloud', 'Spring Cloud Alibaba', 'Spring Cloud Gateway', 'OpenFeign', 'MyBatis-Plus', 'RESTful API'],
   },
   {
     id: 'svc-2',
     title: {
-      en: 'LLM & AI Integration',
-      zh: 'LLM & AI 集成',
+      en: 'Service Governance',
+      zh: '服务治理',
     },
     description: {
-      en: 'Integrate Large Language Models into enterprise applications. Build AI-powered Agent systems, RAG pipelines, and intelligent automation workflows that transform traditional backend processes.',
-      zh: '将大语言模型集成到企业应用中。构建 AI 驱动的 Agent 系统、RAG 管道和智能自动化工作流，转型传统后端流程。',
+      en: 'Microservice discovery, configuration management, and traffic control with Nacos. Service splitting, unified gateway, load balancing, and inter-service communication.',
+      zh: '基于 Nacos 注册中心与配置中心实现服务发现与配置管理。微服务拆分、统一网关、负载均衡、服务间调用。',
     },
-    tags: ['LLM', 'Agent', 'RAG', 'Ollama', 'Python'],
+    tags: ['Nacos', '服务注册', '配置中心', '微服务拆分', '统一网关', '负载均衡', '服务间调用'],
   },
   {
     id: 'svc-3',
     title: {
-      en: 'API Development',
-      zh: 'API 开发',
+      en: 'High Concurrency & Middleware',
+      zh: '高并发与中间件',
     },
     description: {
-      en: 'Design RESTful APIs and high-performance gateways with intelligent routing, rate limiting, and authentication. Clean, documented, and built for developer experience.',
-      zh: '设计 RESTful API 和高性能网关，具备智能路由、限流和身份验证功能。干净、文档完善，为开发者体验而建。',
+      en: 'Handling high-throughput scenarios with Redis, RabbitMQ, async message queues, distributed locks, idempotent APIs, and peak-shaving strategies.',
+      zh: '使用 Redis、RabbitMQ、异步消息队列、分布式锁、接口幂等、削峰填谷应对高并发场景。',
     },
-    tags: ['REST', 'API Gateway', 'Nginx', 'Redis', 'OAuth2'],
+    tags: ['Redis', 'RabbitMQ', '异步消息队列', '分布式锁', '接口幂等', '削峰填谷'],
   },
   {
     id: 'svc-4',
     title: {
-      en: 'Database Design',
-      zh: '数据库设计',
+      en: 'Database & Search',
+      zh: '数据库与搜索',
     },
     description: {
-      en: 'Architect data models across relational and NoSQL databases. Handle complex queries, indexing strategies, and data migration for MySQL, PostgreSQL, and MongoDB.',
-      zh: '跨关系型和 NoSQL 数据库设计数据模型。处理 MySQL、PostgreSQL 和 MongoDB 的复杂查询、索引策略和数据迁移。',
+      en: 'Data modeling and query optimization across MySQL, PostgreSQL, and Elasticsearch for full-text search and analytics.',
+      zh: '跨 MySQL、PostgreSQL 和 Elasticsearch 进行数据建模、查询优化，实现全文搜索与分析。',
     },
-    tags: ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis'],
+    tags: ['MySQL', 'Elasticsearch', 'PostgreSQL'],
   },
   {
     id: 'svc-5',
     title: {
-      en: 'DevOps & Deployment',
-      zh: 'DevOps & 部署',
+      en: 'AI Agent / RAG',
+      zh: 'AI Agent / RAG',
     },
     description: {
-      en: 'Containerized deployments with Docker, CI/CD pipeline configuration, monitoring with Kibana, and cloud infrastructure management. Smooth shipping from dev to production.',
-      zh: '使用 Docker 容器化部署、CI/CD 管道配置、Kibana 监控和云基础设施管理。从开发到生产平滑过渡。',
+      en: 'Building AI-powered Agent systems with FastAPI, LangGraph, LangChain, Qdrant, RAG pipelines, Embedding, Function Calling, and Tool Calling.',
+      zh: '使用 FastAPI、LangGraph、LangChain、Qdrant、RAG、Embedding、Function Calling、Tool Calling 构建 AI 驱动的 Agent 系统。',
     },
-    tags: ['Docker', 'Nginx', 'Git', 'Kibana', 'CI/CD'],
+    tags: ['FastAPI', 'LangGraph', 'LangChain', 'Qdrant', 'RAG', 'Embedding', 'Function Calling', 'Tool Calling'],
+  },
+  {
+    id: 'svc-6',
+    title: {
+      en: 'Engineering & Deployment',
+      zh: '工程化与部署',
+    },
+    description: {
+      en: 'Streamlined development workflow with Maven, Kibana monitoring, Git version control, and API testing with Postman.',
+      zh: '使用 Maven、Kibana 监控、Git 版本控制和 Postman API 测试构建高效的开发工作流。',
+    },
+    tags: ['Maven', 'Kibana', 'Git', 'Postman'],
+  },
+  {
+    id: 'svc-7',
+    title: {
+      en: 'Frontend Development',
+      zh: '前端技术',
+    },
+    description: {
+      en: 'Building modern web interfaces with Vue 3, Vite, and JavaScript, leveraging AI-assisted development workflows.',
+      zh: '使用 Vue 3、Vite、JavaScript 构建现代 Web 界面，借助 AI 辅助开发提升效率。',
+    },
+    tags: ['Vue 3', 'Vite', 'JavaScript', 'AI 辅助开发'],
+  },
+  {
+    id: 'svc-8',
+    title: {
+      en: 'AI Tools',
+      zh: 'AI 工具',
+    },
+    description: {
+      en: 'Accelerating development with AI-powered coding tools including Codex and Claude Code for faster iteration and higher code quality.',
+      zh: '使用 Codex、Claude Code 等 AI 编码工具加速开发迭代，提升代码质量。',
+    },
+    tags: ['Codex', 'Claude Code'],
   },
 ];
