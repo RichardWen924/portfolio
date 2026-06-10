@@ -10,13 +10,13 @@ html {
 }
 
 /* Scroll-snap: one scroll = one section */
-html.snap-mandatory {
-  scroll-snap-type: y mandatory;
+html.snap-scroll {
+  scroll-snap-type: y proximity;
   scroll-padding-top: 64px; /* navbar height */
 }
 
 @media (min-width: 640px) {
-  html.snap-mandatory {
+  html.snap-scroll {
     scroll-padding-top: 72px;
   }
 }

@@ -14,9 +14,9 @@ import Admin from './pages/Admin'
 function MainSite() {
   useEffect(() => {
     // Enable CSS scroll-snap on the document
-    document.documentElement.classList.add('snap-mandatory')
+    document.documentElement.classList.add('snap-scroll')
     return () => {
-      document.documentElement.classList.remove('snap-mandatory')
+      document.documentElement.classList.remove('snap-scroll')
     }
   }, [])
 
