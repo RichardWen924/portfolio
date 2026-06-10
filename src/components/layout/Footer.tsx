@@ -1,6 +1,7 @@
 import { useT } from '../../i18n'
 import DecryptedText from '../effects/DecryptedText'
 import CircularText from '../effects/CircularText'
+import LetterGlitch from '../effects/LetterGlitch'
 
 export default function Footer() {
   const t = useT()
@@ -14,8 +15,16 @@ export default function Footer() {
         scrollSnapAlign: 'start',
       }}
     >
-      {/* Subtle background radial */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.04)_0%,transparent_70%)] pointer-events-none" />
+      <LetterGlitch
+        glitchSpeed={50}
+        centerVignette={true}
+        outerVignette={false}
+        smooth
+        speed={10}
+        colors={['#2b4539', '#61dca3', '#61b3dc']}
+        showCenterVignette
+        showOuterVignette={false}
+      />
 
       <div className="relative z-10 flex flex-col items-center gap-12">
         {/* Section ID */}
