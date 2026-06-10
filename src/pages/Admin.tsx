@@ -73,9 +73,13 @@ function loadData(): StoredData {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed = migrateData(JSON.parse(saved))
-      // Sync visitorCount from the real-time counter
+      // Two-way sync: keep the max of both sources
       const live = getVisitorCount()
-      if (live > parsed.visitorCount) parsed.visitorCount = live
+      const maxCount = Math.max(live, parsed.visitorCount)
+      parsed.visitorCount = maxCount
+      if (maxCount > live) {
+        localStorage.setItem('visitor_count', String(maxCount))
+      }
       return parsed
     }
   } catch { /* ignore */ }
