@@ -909,6 +909,16 @@ function AboutEditor({ data, onSave }: { data: AboutContent; onSave: (a: AboutCo
     { key: 'bio3', label: 'Bio 3', textarea: true },
   ]
 
+  const updateAvatarUrl = (value: string) => {
+    setForm(prev => ({ ...prev, avatarUrl: value }))
+  }
+
+  const handleAvatarUpload = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = () => updateAvatarUrl(reader.result as string)
+    reader.readAsDataURL(file)
+  }
+
   return (
     <div className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-6">
       <div className="flex items-center justify-between mb-6">
@@ -929,6 +939,54 @@ function AboutEditor({ data, onSave }: { data: AboutContent; onSave: (a: AboutCo
       </div>
 
       <div className="space-y-5">
+        {/* Avatar */}
+        <div>
+          <label className="block text-xs text-zinc-500 mb-2 font-mono">Avatar Photo</label>
+          <div className="flex items-start gap-3">
+            <div className="w-16 h-16 rounded-full overflow-hidden border border-white/[0.08] flex-shrink-0 bg-zinc-800">
+              {form.avatarUrl ? (
+                <img src={form.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <div className="flex-1 space-y-2">
+              <input
+                value={form.avatarUrl || ''}
+                onChange={e => updateAvatarUrl(e.target.value)}
+                placeholder="Paste image URL or click upload..."
+                className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 transition-colors font-mono"
+              />
+              <label className="inline-block px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-xs text-zinc-400 hover:text-white cursor-pointer transition-colors">
+                Upload Photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0]
+                    if (file) handleAvatarUpload(file)
+                    e.target.value = ''
+                  }}
+                />
+              </label>
+              {form.avatarUrl && (
+                <button
+                  onClick={() => updateAvatarUrl('')}
+                  className="ml-2 px-3 py-1.5 text-xs text-red-400/70 hover:text-red-400 hover:bg-red-400/5 rounded transition-colors"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         {bilingualFields.map(f => {
           const showEN = editLang === 'all' || editLang === 'en'
           const showZH = editLang === 'all' || editLang === 'zh'

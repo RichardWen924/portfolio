@@ -24,4 +24,5 @@ export const defaultAbout: AboutContent = {
   statYears: 4,
   statProjects: 15,
   statTech: 10,
+  avatarUrl: '',
 };

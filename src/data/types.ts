@@ -45,6 +45,7 @@ export interface AboutContent {
   statYears: number;
   statProjects: number;
   statTech: number;
+  avatarUrl: string;
 }
 
 export interface ServicesContent {
