@@ -42,7 +42,7 @@ export default function ExperienceSection() {
             {t.experience.educationLabel}
           </p>
         </FadeContent>
-        <StaggerReveal delayPerItem={200} className="relative border-l border-white/[0.08] ml-6 sm:ml-16 py-2 mb-16 space-y-10">
+        <StaggerReveal delayPerItem={600} className="relative border-l border-white/[0.08] ml-6 sm:ml-16 py-2 mb-16 space-y-10">
           {educations.map(edu => (
             <div key={edu.id} className="relative pl-8 sm:pl-12">
               <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-800 bg-emerald-400/60 transition-all duration-300" />
@@ -67,7 +67,7 @@ export default function ExperienceSection() {
           </p>
         </FadeContent>
 
-        <StaggerReveal delayPerItem={250} className="relative border-l border-white/[0.08] ml-6 sm:ml-16 space-y-14 py-2">
+        <StaggerReveal delayPerItem={700} className="relative border-l border-white/[0.08] ml-6 sm:ml-16 space-y-14 py-2">
           <ExperienceTimeline experiences={experiences} />
         </StaggerReveal>
       </div>
