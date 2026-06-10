@@ -11,11 +11,11 @@ export default function ExperienceSection() {
   const educations = useEducations()
 
   return (
-    <section id="experience" className="relative pt-14 pb-16 md:pt-16 md:pb-20 px-6 sm:px-16">
+    <section id="experience" className="relative pt-6 pb-16 md:pt-8 md:pb-20 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={800}>
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-3">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-violet-400/60 flex-shrink-0">
               <circle cx="12" cy="12" r="3" fill="currentColor" />
               <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
@@ -27,10 +27,10 @@ export default function ExperienceSection() {
 
         {/* Section heading */}
         <FadeContent blur={true} duration={1000}>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-3">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-2">
             {t.experience.heading}
           </h2>
-          <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-10">
+          <p className="text-zinc-500 text-base md:text-lg max-w-xl mb-6">
             {t.experience.subDescription}
           </p>
         </FadeContent>

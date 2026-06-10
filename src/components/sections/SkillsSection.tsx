@@ -34,10 +34,10 @@ export default function SkillsSection() {
   const t = useT()
 
   return (
-    <section id="skills" className="relative pt-14 pb-16 md:pt-16 md:pb-20 px-6 overflow-hidden">
+    <section id="skills" className="relative pt-6 pb-16 md:pt-8 md:pb-20 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <FadeContent blur={true} duration={1000}>
-          <div className="text-center mb-8">
+          <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-4 mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-violet-400/60 flex-shrink-0">
                 <circle cx="12" cy="12" r="3" fill="currentColor" />
