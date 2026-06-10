@@ -95,13 +95,14 @@ export default function AboutSection() {
                 status="Open to Work"
                 contactText="Contact Me"
                 avatarUrl={about.avatarUrl}
-                showUserInfo={false}
+                showUserInfo={true}
                 enableTilt={true}
                 enableMobileTilt={false}
                 onContactClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 behindGlowColor="rgba(167, 139, 250, 0.5)"
                 behindGlowEnabled
                 innerGradient="linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)"
+                iconUrl={`data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="32" font-weight="700" font-family="monospace" fill="white">&lt;/&gt;</text></svg>')}`}
               />
             </div>
           </FadeContent>
