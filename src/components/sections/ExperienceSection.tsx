@@ -11,7 +11,7 @@ export default function ExperienceSection() {
   const educations = useEducations()
 
   return (
-    <section id="experience" className="relative py-24 md:py-32 px-6 sm:px-16">
+    <section id="experience" className="relative pt-16 pb-24 md:pt-20 md:pb-32 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={800}>

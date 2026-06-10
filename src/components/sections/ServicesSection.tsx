@@ -10,7 +10,7 @@ export default function ServicesSection() {
   const servicesContent = useServicesContent()
 
   return (
-    <section id="services" className="relative py-24 md:py-32 px-6 sm:px-16">
+    <section id="services" className="relative pt-16 pb-24 md:pt-20 md:pb-32 px-6 sm:px-16">
       <div className="max-w-4xl mx-auto">
         {/* Section header */}
         <FadeContent blur={true} duration={800}>
