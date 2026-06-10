@@ -1,91 +1,50 @@
 [
   {
-    "id": "svc-1",
+    "id": "mq7gzbd8zvxq",
     "title": {
-      "en": "Microservice Architecture",
-      "zh": "微服务架构"
+      "en": "",
+      "zh": "后端功能开发"
     },
     "description": {
-      "en": "Design and build distributed backend systems with Spring Cloud, service discovery, circuit breakers, and event-driven communication. Scalable, resilient, and ready for production traffic.",
-      "zh": "使用 Spring Cloud、服务发现、熔断器和事件驱动通信设计和构建分布式后端系统。可扩展、高可用，准备好承载生产流量。"
+      "en": "",
+      "zh": "Spring Boot、Spring Cloud、Spring Cloud Alibaba、Spring Cloud Gateway、OpenFeign、MyBatis-Plus、RESTful API"
     },
     "tags": [
       "Spring Boot",
       "Spring Cloud",
-      "Kafka",
-      "RabbitMQ",
-      "Docker"
+      "Spring Cloud Alibaba",
+      "Spring Cloud Gateway",
+      "OpenFeign",
+      "MyBatis-Plus",
+      "RESTful API"
     ]
   },
   {
-    "id": "svc-2",
+    "id": "mq7h0rhxq00y",
     "title": {
-      "en": "LLM & AI Integration",
-      "zh": "LLM & AI 集成"
+      "en": "",
+      "zh": "微服务框架下开发"
     },
     "description": {
-      "en": "Integrate Large Language Models into enterprise applications. Build AI-powered Agent systems, RAG pipelines, and intelligent automation workflows that transform traditional backend processes.",
-      "zh": "将大语言模型集成到企业应用中。构建 AI 驱动的 Agent 系统、RAG 管道和智能自动化工作流，转型传统后端流程。"
+      "en": "",
+      "zh": "深度了解微服务的核心思想，并使用nacos等中间件进行系统高性能开发"
     },
     "tags": [
-      "LLM",
-      "Agent",
-      "RAG",
-      "Ollama",
-      "Python"
+      "Nacos 注册中心、Nacos 配置中心、微服务拆分、统一网关、负载均衡、服务间调用"
     ]
   },
   {
-    "id": "svc-3",
+    "id": "mq7h2kj764gt",
     "title": {
-      "en": "API Development",
-      "zh": "API 开发"
+      "en": "",
+      "zh": "系统高并发开发"
     },
     "description": {
-      "en": "Design RESTful APIs and high-performance gateways with intelligent routing, rate limiting, and authentication. Clean, documented, and built for developer experience.",
-      "zh": "设计 RESTful API 和高性能网关，具备智能路由、限流和身份验证功能。干净、文档完善，为开发者体验而建。"
+      "en": "",
+      "zh": "使用redis、消息队列等技术，让系统具备应对高并发流量的能力"
     },
     "tags": [
-      "REST",
-      "API Gateway",
-      "Nginx",
-      "Redis",
-      "OAuth2"
-    ]
-  },
-  {
-    "id": "svc-4",
-    "title": {
-      "en": "Database Design",
-      "zh": "数据库设计"
-    },
-    "description": {
-      "en": "Architect data models across relational and NoSQL databases. Handle complex queries, indexing strategies, and data migration for MySQL, PostgreSQL, and MongoDB.",
-      "zh": "跨关系型和 NoSQL 数据库设计数据模型。处理 MySQL、PostgreSQL 和 MongoDB 的复杂查询、索引策略和数据迁移。"
-    },
-    "tags": [
-      "MySQL",
-      "PostgreSQL",
-      "MongoDB",
-      "Redis"
-    ]
-  },
-  {
-    "id": "svc-5",
-    "title": {
-      "en": "DevOps & Deployment",
-      "zh": "DevOps & 部署"
-    },
-    "description": {
-      "en": "Containerized deployments with Docker, CI/CD pipeline configuration, monitoring with Kibana, and cloud infrastructure management. Smooth shipping from dev to production.",
-      "zh": "使用 Docker 容器化部署、CI/CD 管道配置、Kibana 监控和云基础设施管理。从开发到生产平滑过渡。"
-    },
-    "tags": [
-      "Docker",
-      "Nginx",
-      "Git",
-      "Kibana",
-      "CI/CD"
+      "Redis、RabbitMQ、异步消息队列、分布式锁、接口幂等、削峰填谷"
     ]
   }
 ]
